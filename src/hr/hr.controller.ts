@@ -1,7 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { HrService } from './hr.service';
 
-// te EP będą w kontrolerze kursanta i hr będzie mieć do nich dostep
+// TODO te EP beda uzywac serwisy innych modulow
 
 @Controller('/hr')
 export class HrController {
@@ -26,5 +26,7 @@ export class HrController {
     // pobranie pojedynczego kursanta, użycie innego serwisu
     return;
   }
+
+
 
 }
