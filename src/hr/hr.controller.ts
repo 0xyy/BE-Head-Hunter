@@ -1,34 +1,30 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { HrService } from './hr.service';
-import { CreateHrDto } from './dto/create-hr.dto';
-import { UpdateHrDto } from './dto/update-hr.dto';
 
-@Controller('hr')
+// te EP będą w kontrolerze kursanta i hr będzie mieć do nich dostep
+
+@Controller('/hr')
 export class HrController {
-  constructor(private readonly hrService: HrService) {}
+  constructor(
+      private readonly hrService: HrService
+  ) {}
 
-  @Post()
-  create(@Body() createHrDto: CreateHrDto) {
-    return this.hrService.create(createHrDto);
+  @Get('/students/available')
+  showAvailableStudents(): Promise<void> {
+    return this.hrService.getAvailableStudents();
   }
 
-  @Get()
-  findAll() {
-    return this.hrService.findAll();
+  @Get('/students/to-talk')
+  showStudentsToTalk(): Promise<void> {
+    return this.hrService.getStudentsToTalk();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.hrService.findOne(+id);
+  @Get('/student/:id')
+  showSingleStudent(
+      @Param('id') id: string,
+  ): Promise<void> {
+    // pobranie pojedynczego kursanta, użycie innego serwisu
+    return;
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateHrDto: UpdateHrDto) {
-    return this.hrService.update(+id, updateHrDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.hrService.remove(+id);
-  }
 }
