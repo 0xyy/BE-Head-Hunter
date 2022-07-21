@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { EditPasswordDto } from './dto/edit-password.dto';
-import { RecoverDto } from './dto/recover.dto';
-import { ActivateUserDto } from './dto/ActivateUserDto';
+import { RecoverPasswordDto } from './dto/recover-password.dto';
+import { ActivateUserDto } from './dto/activate-user.dto';
 
 @Injectable()
 export class UserService {
@@ -9,7 +9,7 @@ export class UserService {
     return Promise.resolve(undefined);
   }
 
-  async recover(recover: RecoverDto) {
+  async recover(recover: RecoverPasswordDto) {
     return Promise.resolve(undefined);
   }
 

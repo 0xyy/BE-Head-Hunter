@@ -1,6 +1,6 @@
-import { ActivateUserDto } from '../../user/dto/ActivateUserDto';
+import { ActivateUserDto } from '../../user/dto/activate-user.dto';
 import { EditPasswordDto } from '../../user/dto/edit-password.dto';
-import { RecoverDto } from '../../user/dto/recover.dto';
+import { RecoverDto } from '../../user/dto/recover-password.dto';
 
 export type EditPasswordResponse = {
   isSuccess: boolean;

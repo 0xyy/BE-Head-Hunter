@@ -6,8 +6,8 @@ import {
   EditPasswordResponse,
   RecoverPasswordResponse,
 } from '../types';
-import { RecoverDto } from './dto/recover.dto';
-import { ActivateUserDto } from './dto/ActivateUserDto';
+import { RecoverPasswordDto } from './dto/recover-password.dto';
+import { ActivateUserDto } from './dto/activate-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -25,7 +25,7 @@ export class UserController {
   }
   @Get(`/recover`)
   recoverPassword(
-    @Body() recover: RecoverDto,
+    @Body() recover: RecoverPasswordDto,
   ): Promise<RecoverPasswordResponse> {
     return this.userService.recover(recover);
   }
