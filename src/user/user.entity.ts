@@ -1,7 +1,7 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { UserInterface, UserRole } from '../types';
 
-Entity();
+@Entity()
 export class User extends BaseEntity implements UserInterface {
   @PrimaryGeneratedColumn('uuid')
   id: string;
