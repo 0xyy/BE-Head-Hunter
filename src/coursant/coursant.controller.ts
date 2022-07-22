@@ -1,23 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param } from '@nestjs/common';
 import { CoursantService } from './coursant.service';
-import { CreateCoursantDto } from '../types';
-import { UpdateCoursantDto } from '../types';
-import {ResponseReviewCoursantsDto} from "../types";
+import {ResponseHrCoursantsDto, ResponseHrCoursantsForInterviewDto} from '../types';
 import {CoursantDto} from "../types";
+import {CvCoursantDto} from "../types";
 
 @Controller('coursant')
 export class CoursantController {
   constructor(private readonly coursantService: CoursantService) {}
 
-  @Post()
-  create(@Body() createCoursantDto: CreateCoursantDto) {
-    return this.coursantService.create(createCoursantDto);
-  }
 
   @Get()
   findAll(@Param('currentPage') currentPage: number,
           @Param('pageSize') pageSize: number,
-          @Param('pageCount') pageCount: number): ResponseReviewCoursantsDto {
+          @Param('pageCount') pageCount: number): ResponseHrCoursantsDto {
 
     return this.coursantService.findAll();
   }
@@ -27,19 +22,24 @@ export class CoursantController {
     return this.coursantService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCoursantDto: UpdateCoursantDto) {
-    return this.coursantService.update(id, updateCoursantDto);
+  @Get('interview/:hrId')
+  findAllForInterview(@Param('hrId') hrId: string): ResponseHrCoursantsForInterviewDto{
+    return this.coursantService.findAllForInterview(hrId);
   }
 
-  @Patch('reservation/:id')
+  @Get('cv/:id')
+  findOneCV(@Param('id') id: string): CvCoursantDto{
+    return this.coursantService.findOneCV(id);
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() coursantDto: CoursantDto) {
+    return this.coursantService.update(id, coursantDto);
+  }
+
+  @Patch('reservation/:id/:hrid')
   reservation(@Param('id') id: string, @Param('hrid') hrid: string,) {
     return this.coursantService.reservation(id, hrid);
   }
 
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.coursantService.remove(id);
-  }
 }
