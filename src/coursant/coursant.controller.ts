@@ -1,4 +1,4 @@
-import { Controller, Get, Body, Patch, Param } from '@nestjs/common';
+import {Controller, Get, Body, Patch, Param, Query} from '@nestjs/common';
 import { CoursantService } from './coursant.service';
 import {ResponseHrCoursantsDto, ResponseHrCoursantsForInterviewDto} from '../types';
 import {CoursantDto} from "../types";
@@ -10,9 +10,9 @@ export class CoursantController {
 
 
   @Get()
-  findAll(@Param('currentPage') currentPage: number,
-          @Param('pageSize') pageSize: number,
-          @Param('pageCount') pageCount: number): ResponseHrCoursantsDto {
+  findAll(@Query('currentPage') currentPage: number,
+          @Query('pageSize') pageSize: number,
+          @Query('pageCount') pageCount: number): ResponseHrCoursantsDto {
 
     return this.coursantService.findAll();
   }
