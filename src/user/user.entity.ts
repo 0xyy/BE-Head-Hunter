@@ -2,7 +2,7 @@ import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { UserInterface, UserRole } from '../types';
 
 Entity();
-export class UserEntity extends BaseEntity implements UserInterface {
+export class User extends BaseEntity implements UserInterface {
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column({
