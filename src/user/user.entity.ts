@@ -25,7 +25,12 @@ export class UserEntity extends BaseEntity implements UserInterface {
     default: false,
   })
   active: boolean;
-
   @Column()
   role: UserRole;
+  /* relation 1-1  we will merge them when will be added their entities
+  @OneToOne((type) => Student, (entity) => entity.user)
+  student: Student;
+  @OneToOne((type) => Hr, (entity) => entity.user)
+  hr: Hr;
+  */
 }
