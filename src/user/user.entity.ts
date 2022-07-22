@@ -12,6 +12,8 @@ export class User extends BaseEntity implements UserInterface {
   email: string;
   @Column()
   pwdHash: string;
+  @Column()
+  salz: string;
   @Column({
     nullable: true,
     default: null,
@@ -28,9 +30,9 @@ export class User extends BaseEntity implements UserInterface {
   @Column()
   role: UserRole;
   /* relation 1-1  we will merge them when will be added their entities
-  @OneToOne((type) => Student, (entity) => entity.user)
+  @OneToOne((type) => Student)
   student: Student;
-  @OneToOne((type) => Hr, (entity) => entity.user)
+  @OneToOne((type) => Hr)
   hr: Hr;
   */
 }

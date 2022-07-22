@@ -4,7 +4,7 @@ import { RecoverPasswordDto } from './dto/recover-password.dto';
 import { ActivateUserDto } from './dto/activate-user.dto';
 import { User } from './user.entity';
 import { ActivateUserResponse } from '../types';
-import { hashPwd } from '../utils/hash-pwd';
+import { hashPwd, randomSalz } from '../utils/hash-pwd';
 
 @Injectable()
 export class UserService {
@@ -28,7 +28,9 @@ export class UserService {
     if (!user) {
       return { isSuccess: false };
     }
-    user.pwdHash = hashPwd(password);
+    const salz = randomSalz(128);
+    user.pwdHash = hashPwd(password, salz);
+    user.salz = salz;
     user.active = true;
     user.activeTokenId = null;
     await user.save();
