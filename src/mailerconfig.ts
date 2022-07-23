@@ -2,8 +2,18 @@
 //konfiguracja maila
 export = {
   // nazwa uzytkownika: haslo @ host : port
-  transport: `smtp://headhunter@bilka.networkmanager.pl:123456@mail.bilka.networkmanager.pl:587`,
-  defaults: {
-    from: 'headhunter@bilka.networkmanager.pl', //od kogo
+  transport: {
+    host: 'mail.bilka.networkmanager.pl',
+    port: 587,
+    ignoreTLS: true,
+    secure: false,
+    auth: {
+      user: 'headhunter@bilka.networkmanager.pl',
+      pass: '123456',
+    },
   },
+  defaults: {
+    from: '"No Reply" <headhunter@bilka.networkmanager.pl>',
+  },
+  preview: true,
 };
