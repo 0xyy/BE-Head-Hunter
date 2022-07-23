@@ -21,12 +21,25 @@ export class UserService {
     const user = await User.findOne({
       where: {
         id: userId,
-        active: false,
-        activeTokenId: token,
       },
     });
     if (!user) {
-      return { isSuccess: false };
+      return {
+        message: 'there is no such user.',
+        isSuccess: false,
+      };
+    }
+    if (user.active) {
+      return {
+        message: 'User is active.',
+        isSuccess: false,
+      };
+    }
+    if (user.activeTokenId !== token) {
+      return {
+        message: 'Wrong activation link.',
+        isSuccess: false,
+      };
     }
     const salz = randomSalz(128);
     user.pwdHash = hashPwd(password, salz);
@@ -35,6 +48,7 @@ export class UserService {
     user.activeTokenId = null;
     await user.save();
     return {
+      message: 'user has been activated',
       isSuccess: true,
     };
   }
