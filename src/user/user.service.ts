@@ -45,7 +45,7 @@ export class UserService {
 
     this.mailService.sendMail(
       recover.email,
-      'Odzykiwanie hasła Megak Head-Hunter',
+      'odzyskiwanie konta Megak Head-Hunter',
       `<p>Twoje nowe hasło to:${password}</p>`,
     );
     return {
