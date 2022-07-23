@@ -1,19 +1,42 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { EditPasswordDto } from './dto/edit-password.dto';
 import { RecoverPasswordDto } from './dto/recover-password.dto';
 import { ActivateUserDto } from './dto/activate-user.dto';
 import { User } from './user.entity';
-import { ActivateUserResponse } from '../types';
+import { ActivateUserResponse, RecoverPasswordResponse } from '../types';
 import { hashPwd, randomSalz } from '../utils/hash-pwd';
+import { MailService } from 'src/mail/mail.service';
+import { randomPassword } from '../utils/random-password';
 
 @Injectable()
 export class UserService {
+  constructor(@Inject(MailService) private mailService: MailService) {}
   async editPassword(password: EditPasswordDto) {
     return Promise.resolve(undefined);
   }
 
-  async recover(recover: RecoverPasswordDto) {
-    return Promise.resolve(undefined);
+  async recover(recover: RecoverPasswordDto): Promise<RecoverPasswordResponse> {
+    const user = await User.findOne({
+      where: {
+        email: recover.email,
+      },
+    });
+    if (!user) {
+      return {
+        isSuccess: false,
+      };
+    }
+    const password = randomPassword();
+    user.pwdHash = hashPwd(password, user.salz);
+
+    this.mailService.sendMail(
+      recover.email,
+      'Odzykiwanie hasła Megak Head-Hunter',
+      `<p>Twoje nowe hasło to:${password}</p>`,
+    );
+    return {
+      isSuccess: true,
+    };
   }
 
   async activate(active: ActivateUserDto): Promise<ActivateUserResponse> {
