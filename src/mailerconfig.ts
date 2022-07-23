@@ -2,8 +2,8 @@
 //konfiguracja maila
 export = {
   // nazwa uzytkownika: haslo @ host : port
-  transport: `smtp://admin123:admin456@localhost:2500`,
+  transport: `smtp://headhunter:123456@mail.bilka.networkmanager.pl:587`,
   defaults: {
-    from: 'admin@test.example.com', //od kogo
+    from: 'headhunter@bilka.networkmanager.pl', //od kogo
   },
 };
