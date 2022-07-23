@@ -12,7 +12,21 @@ import { randomPassword } from '../utils/random-password';
 export class UserService {
   constructor(@Inject(MailService) private mailService: MailService) {}
   async editPassword(password: EditPasswordDto) {
-    return Promise.resolve(undefined);
+    const user = await User.findOneOrFail({
+      where: {
+        id: password.userId,
+      },
+    });
+    if (user.pwdHash !== hashPwd(password.pwd, user.salz)) {
+      return {
+        isSuccess: false,
+      };
+    }
+    user.pwdHash = hashPwd(password.newPwd, user.salz);
+    await user.save();
+    return {
+      isSuccess: true,
+    };
   }
 
   async recover(recover: RecoverPasswordDto): Promise<RecoverPasswordResponse> {
