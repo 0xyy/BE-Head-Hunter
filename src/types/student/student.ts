@@ -20,7 +20,9 @@ export enum ExpectedContractType {
   UZUOD,
 }
 
-export type StudentResponse = {};
+export type StudentResponse = {
+  isSuccess: boolean;
+};
 export type ActiveStudentsResponse = {};
 export type StudentForInterviewResponse = {
   currentPage: number;
