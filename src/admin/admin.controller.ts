@@ -1,10 +1,20 @@
-import { Body, Controller, Get, Inject, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Patch,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { RecoverPasswordDto } from './dto/recoverPasswordDto';
 import { EditPasswordDto } from './dto/editPasswordDto';
 import { EditPasswordResponse, RecoverPasswordResponse } from '../types';
 import { UserService } from '../user/user.service';
 import { HrService } from '../hr/hr.service';
 import { AdminService } from './admin.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('admin')
 export class AdminController {
@@ -16,8 +26,12 @@ export class AdminController {
 
   //import all coursant from file
   @Post(`/createUsersFromFile`)
-  importUsersFromJSONFile(@Body() jsonfile: File): Promise<Boolean> {
-    return this.adminService.CreateUsersFromFile(jsonfile);
+  @UseInterceptors(FileInterceptor('file'))
+  importUsersFromJSONFile(
+    @UploadedFile() file,
+    @Body() body,
+  ): Promise<Boolean> {
+    return this.adminService.CreateUsersFromFile(file);
   }
   //add new hr
   @Post(`/addHr`)
