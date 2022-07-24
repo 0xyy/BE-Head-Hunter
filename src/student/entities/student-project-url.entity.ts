@@ -16,9 +16,7 @@ export class StudentProjectUrl {
   })
   projectUrl: string;
 
-  @ManyToOne((type) => Student, (entity) => entity.projectUrls, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne((type) => Student, (entity) => entity.projectUrls)
   @JoinColumn()
   student: Student;
 }

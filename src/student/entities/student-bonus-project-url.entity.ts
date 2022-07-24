@@ -1,15 +1,14 @@
 import {
+  BaseEntity,
   Column,
   Entity,
-  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Student } from './student.entity';
-import { InsertStudent } from './insert-student.entity';
+import { StudentCoursesDegree } from './student-courses-degree.entity';
 
 @Entity()
-export class StudentBonusProjectUrl {
+export class StudentBonusProjectUrl extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column({
@@ -17,9 +16,12 @@ export class StudentBonusProjectUrl {
   })
   projectUrl: string;
 
-  @ManyToOne((type) => InsertStudent, (entity) => entity.bonusProjectUrls, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn()
-  student: Student;
+  @ManyToOne(
+    (type) => StudentCoursesDegree,
+    (entity) => entity.bonusProjectUrls,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
+  studentCoursesDegree: StudentCoursesDegree;
 }

@@ -2,13 +2,16 @@ import {
   BaseEntity,
   Column,
   Entity,
+  JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { User } from '../../user/user.entity';
 import { StudentBonusProjectUrl } from './student-bonus-project-url.entity';
 
 @Entity()
-export class InsertStudent extends BaseEntity {
+export class StudentCoursesDegree extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column({
@@ -31,6 +34,16 @@ export class InsertStudent extends BaseEntity {
   })
   teamProjectDegree: number;
 
-  @OneToMany((type) => StudentBonusProjectUrl, (entity) => entity.student)
+  @OneToOne((type) => User, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  user: User;
+
+  @OneToMany(
+    (type) => StudentBonusProjectUrl,
+    (entity) => entity.studentCoursesDegree,
+  )
+  @JoinColumn()
   bonusProjectUrls: StudentBonusProjectUrl[];
 }

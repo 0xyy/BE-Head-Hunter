@@ -111,6 +111,8 @@ export class Student {
   })
   status: StudentStatus;
 
-  @OneToOne((type) => User)
+  @OneToOne((type) => User, {
+    onDelete: 'CASCADE',
+  })
   user: User;
 }
