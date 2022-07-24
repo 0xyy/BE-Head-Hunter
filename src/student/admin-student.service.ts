@@ -48,6 +48,8 @@ export class AdminStudentService {
   ): Promise<StudentResponse> {
     try {
       const { email, token, bonusProjectUrls } = student;
+      const checkUser = await User.findOne({ where: { email: email } });
+      if (checkUser) return { isSuccess: false };
       const user = new User();
       user.email = email;
       user.role = UserRole.STUDENT;
