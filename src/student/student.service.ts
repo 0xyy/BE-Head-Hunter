@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { StudentDto } from './dto/student.dto';
 import {
   ActiveStudentsResponse,
+  StudentInfoInterface,
+  StudentInfoUpdateResponse,
   StudentResponse,
-  StudentStatus,
-  UserRole,
 } from '../types';
 import { StudentInfo } from './entities/student-info.entity';
 import { User } from '../user/user.entity';
@@ -15,8 +15,6 @@ export class StudentService {
     currentPage,
     pageSize,
   ): Promise<ActiveStudentsResponse> {
-    console.log(pageSize);
-    console.log(currentPage);
     const students = await StudentInfo.find(); // querrybuilder
     if (!students) {
       return {
@@ -31,27 +29,43 @@ export class StudentService {
     };
   }
 
-  private createStudentInfo(studentInfo: StudentDto) {
+  private async createStudentInfo(
+    studentInfo: StudentDto,
+  ): Promise<StudentInfoInterface> {
     const student = new StudentInfo();
-    for (const studentElement of Object.keys(studentInfo)) {
-      console.log(studentElement);
+    for (const key of Object.keys(studentInfo)) {
+      student[key] = studentInfo[key];
     }
-    // student.tel; = studentInfo.tel;
-    // student.firstName = studentInfo.firstName
-    // student.lastName = studentInfo.lastName
-    // student.githubUsername = studentInfo.githubUsername
-    // student.pro = studentInfo.pro
-    // student. = studentInfo.
-    // student. = studentInfo.
+    try {
+      return await student.save();
+    } catch (e) {
+      throw new Error();
+    }
+  }
+
+  private async updateStudentInfo(
+    id: string,
+    studentInfo: StudentDto,
+  ): Promise<StudentInfoInterface> {
+    try {
+      const oldStudentInfo = await StudentInfo.findOneOrFail({ where: { id } });
+      for (const key of Object.keys(studentInfo)) {
+        oldStudentInfo[key] = studentInfo[key];
+      }
+      await oldStudentInfo.save();
+      return oldStudentInfo;
+    } catch (e) {
+      throw new Error();
+    }
   }
 
   findOne(id: string): StudentResponse {
     return undefined;
   }
 
-  async update(studentInfo: StudentDto) {
+  async update(studentInfo: StudentDto): Promise<StudentInfoUpdateResponse> {
     const user = await User.findOne({
-      where: { id: '123' },
+      where: { id: studentInfo.userId },
       relations: ['studentInfo'],
     });
     if (!user) {
@@ -59,11 +73,28 @@ export class StudentService {
         isSuccess: false,
       };
     }
-    if (user.studentInfo) {
-      this.createStudentInfo(studentInfo);
-    }
+    if (!user.studentInfo && user.active) {
+      const newStudent = await this.createStudentInfo(studentInfo);
+      user.studentInfo = newStudent;
+      await user.save();
 
-    return `This `;
+      return {
+        studentInfoId: newStudent.id,
+        isSuccess: true,
+      };
+    } else if (user.studentInfo && user.active) {
+      const student = await this.updateStudentInfo(
+        user.studentInfo.id,
+        studentInfo,
+      );
+      return {
+        studentInfoId: student.id,
+        isSuccess: true,
+      };
+    }
+    return {
+      isSuccess: false,
+    };
   }
 
   reservation(id: string, hrid: string) {

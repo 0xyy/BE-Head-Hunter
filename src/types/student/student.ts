@@ -87,6 +87,14 @@ export type ActiveStudentsResponse =
       message: string;
       isSuccess: false;
     };
+export type StudentInfoUpdateResponse =
+  | {
+      studentInfoId: string;
+      isSuccess: true;
+    }
+  | {
+      isSuccess: false;
+    };
 export type StudentForInterviewResponse = {
   currentPage: number;
   pageSize: number;

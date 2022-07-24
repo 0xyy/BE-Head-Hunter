@@ -18,9 +18,9 @@ export class StudentDto {
   @IsString()
   @IsNotEmpty()
   userId: string;
-  @IsString()
-  @ValidateIf((object, value) => value !== null)
-  studentInfoId: string | null;
+  // @IsString()
+  // @ValidateIf((object, value) => value !== null)
+  // studentInfoId: string | null;
   @IsString()
   @MaxLength(15)
   @ValidateIf((object, value) => value !== null)
