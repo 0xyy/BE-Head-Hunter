@@ -1,4 +1,34 @@
-export class CvStudentDto {
+import { HrStudentForInterviewDto } from '../../student/dto/hr-student-for-interview.dto';
+
+export enum StudentStatus {
+  ACCESSIBLE,
+  PENDING,
+  EMPLOYED,
+}
+
+export enum ExpectedTypeWork {
+  ALL,
+  REMOTE,
+  STATIONARY,
+  HYBRID,
+}
+
+export enum ExpectedContractType {
+  NOPREFERENCE,
+  UOP,
+  B2B,
+  UZUOD,
+}
+
+export type StudentResponse = {};
+export type ActiveStudentsResponse = {};
+export type StudentForInterviewResponse = {
+  currentPage: number;
+  pageSize: number;
+  pageCount: number;
+  students: HrStudentForInterviewDto[];
+};
+export type StudentCvProfilResponse = {
   /**   Jeżeli ktoś nie uzupełnił loginu GitHub to wyświetlamy domyślną ikonkę awatarową. Np. taką jak na makiecie czy https://www.deviantart.com/karmaanddestiny/art/Default-user-icon-4-858661084 .
    *
    *        Jeżeli natomiast ktoś podał login, to ikonę generujemy automatycznie. Jest to bardzo proste.
@@ -128,4 +158,4 @@ export class CvStudentDto {
    *   Przebieg kariery zawodowej.
    */
   workExperience: string;
-}
+};
