@@ -6,8 +6,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Student } from './student.entity';
-import { StudentInterface, StudentProjectUrlInterface } from '../../types';
+import { StudentInfo } from './student-info.entity';
+import { StudentInfoInterface, StudentProjectUrlInterface } from '../../types';
 
 @Entity()
 export class StudentProjectUrl
@@ -21,7 +21,7 @@ export class StudentProjectUrl
   })
   projectUrl: string;
 
-  @ManyToOne((type) => Student, (entity) => entity.projectUrls)
+  @ManyToOne((type) => StudentInfo, (entity) => entity.projectUrls)
   @JoinColumn()
-  student: StudentInterface;
+  studentInfo: StudentInfoInterface;
 }
