@@ -3,7 +3,7 @@ import { StudentResponse, UserRole } from '../types';
 import { User } from '../user/user.entity';
 import { StudentCoursesDegree } from './entities/student-courses-degree.entity';
 import { StudentBonusProjectUrl } from './entities/student-bonus-project-url.entity';
-import { insertStudentDto } from './dto/insert-student.dto';
+import { InsertStudentDto } from './dto/insert-student.dto';
 
 @Injectable()
 export class AdminStudentService {
@@ -20,7 +20,7 @@ export class AdminStudentService {
     });
   }
 
-  private async insertStudentDegre(student: insertStudentDto, user) {
+  private async insertStudentDegre(student: InsertStudentDto, user) {
     const {
       courseCompletion,
       courseEngagment,
@@ -36,7 +36,7 @@ export class AdminStudentService {
     return await studentDegree.save();
   }
   public async insertStudent(
-    student: insertStudentDto,
+    student: InsertStudentDto,
   ): Promise<StudentResponse> {
     try {
       const { email, token, bonusProjectUrls } = student;

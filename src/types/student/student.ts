@@ -1,5 +1,7 @@
 import { HrStudentForInterviewDto } from '../../student/dto/hr-student-for-interview.dto';
 
+export interface StudentInterface {}
+
 export enum StudentStatus {
   ACCESSIBLE,
   PENDING,
