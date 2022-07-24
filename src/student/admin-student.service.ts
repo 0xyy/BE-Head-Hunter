@@ -1,5 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { StudentResponse, UserRole } from '../types';
+import {
+  StudentCoursesDegreeInterface,
+  StudentResponse,
+  UserInterface,
+  UserRole,
+} from '../types';
 import { User } from '../user/user.entity';
 import { StudentCoursesDegree } from './entities/student-courses-degree.entity';
 import { StudentBonusProjectUrl } from './entities/student-bonus-project-url.entity';
@@ -9,7 +14,7 @@ import { InsertStudentDto } from './dto/insert-student.dto';
 export class AdminStudentService {
   private async insertBonusProjectUrl(
     projectUrls: string[],
-    studentDegree: StudentCoursesDegree,
+    studentDegree: StudentCoursesDegreeInterface,
   ) {
     projectUrls.map(async (project) => {
       const insertUrl = new StudentBonusProjectUrl();
@@ -20,7 +25,10 @@ export class AdminStudentService {
     });
   }
 
-  private async insertStudentDegre(student: InsertStudentDto, user) {
+  private async insertStudentDegree(
+    student: InsertStudentDto,
+    user: UserInterface,
+  ) {
     const {
       courseCompletion,
       courseEngagment,
@@ -45,7 +53,7 @@ export class AdminStudentService {
       user.role = UserRole.STUDENT;
       user.activeTokenId = token;
       await user.save();
-      const studentDegree = await this.insertStudentDegre(student, user);
+      const studentDegree = await this.insertStudentDegree(student, user);
       await this.insertBonusProjectUrl(bonusProjectUrls, studentDegree);
       user.studentCoursesDegree = studentDegree;
       await user.save();

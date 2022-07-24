@@ -9,9 +9,17 @@ import {
 } from 'typeorm';
 import { User } from '../../user/user.entity';
 import { StudentBonusProjectUrl } from './student-bonus-project-url.entity';
+import {
+  StudentBonusProjectUrlInterface,
+  StudentCoursesDegreeInterface,
+  UserInterface,
+} from '../../types';
 
 @Entity()
-export class StudentCoursesDegree extends BaseEntity {
+export class StudentCoursesDegree
+  extends BaseEntity
+  implements StudentCoursesDegreeInterface
+{
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column({
@@ -38,12 +46,12 @@ export class StudentCoursesDegree extends BaseEntity {
     onDelete: 'CASCADE',
   })
   @JoinColumn()
-  user: User;
+  user: UserInterface;
 
   @OneToMany(
     (type) => StudentBonusProjectUrl,
     (entity) => entity.studentCoursesDegree,
   )
   @JoinColumn()
-  bonusProjectUrls: StudentBonusProjectUrl[];
+  bonusProjectUrls: StudentBonusProjectUrlInterface[];
 }

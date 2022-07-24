@@ -1,6 +1,54 @@
 import { HrStudentForInterviewDto } from '../../student/dto/hr-student-for-interview.dto';
+import { UserInterface } from '../user';
 
-export interface StudentInterface {}
+export interface StudentInterface {
+  id: string;
+  tel?: string;
+  firstName: string;
+  lastName: string;
+  githubUsername: string; //Należy sprawdzić za pomocą API GH lub innym sposobem, czy taka osoba istnieje.
+  portfolioUrls?: StudentPortfolioUrlInterface[]; //Tablica URL-i do portfolio.
+  projectUrls: StudentProjectUrlInterface[]; //Tablica URL-i do GitHuba projektu zaliczeniowego.
+  bio?: string;
+  expectedTypeWork: ExpectedTypeWork;
+  targetWorkCity?: string;
+  expectedContractType: ExpectedContractType;
+  expectedSalary?: string;
+  canTakeApprenticeship: boolean;
+  monthsOfCommercialExp: number;
+  education?: string;
+  workExperience?: string;
+  courses?: string;
+  status: StudentStatus;
+  user: UserInterface;
+}
+
+export interface StudentBonusProjectUrlInterface {
+  id: string;
+  projectUrl: string;
+  studentCoursesDegree: StudentCoursesDegreeInterface;
+}
+
+export interface StudentCoursesDegreeInterface {
+  id: string;
+  courseCompletion: number;
+  courseEngagment: number;
+  projectDegree: number;
+  teamProjectDegree: number;
+  bonusProjectUrls: StudentBonusProjectUrlInterface[];
+}
+
+export interface StudentPortfolioUrlInterface {
+  id: string;
+  projectUrl: string;
+  student: StudentInterface;
+}
+
+export interface StudentProjectUrlInterface {
+  id: string;
+  projectUrl: string;
+  student: StudentInterface;
+}
 
 export enum StudentStatus {
   ACCESSIBLE,

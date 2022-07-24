@@ -1,4 +1,5 @@
 import {
+  BaseEntity,
   Column,
   Entity,
   JoinColumn,
@@ -6,9 +7,13 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Student } from './student.entity';
+import { StudentInterface, StudentProjectUrlInterface } from '../../types';
 
 @Entity()
-export class StudentProjectUrl {
+export class StudentProjectUrl
+  extends BaseEntity
+  implements StudentProjectUrlInterface
+{
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column({
@@ -18,5 +23,5 @@ export class StudentProjectUrl {
 
   @ManyToOne((type) => Student, (entity) => entity.projectUrls)
   @JoinColumn()
-  student: Student;
+  student: StudentInterface;
 }

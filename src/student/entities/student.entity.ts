@@ -1,4 +1,5 @@
 import {
+  BaseEntity,
   Column,
   Entity,
   OneToMany,
@@ -10,12 +11,16 @@ import { StudentProjectUrl } from './student-project-url.entity';
 import {
   ExpectedContractType,
   ExpectedTypeWork,
+  StudentInterface,
+  StudentPortfolioUrlInterface,
+  StudentProjectUrlInterface,
   StudentStatus,
+  UserInterface,
 } from '../../types';
 import { User } from '../../user/user.entity';
 
 @Entity()
-export class Student {
+export class Student extends BaseEntity implements StudentInterface {
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column({
@@ -43,10 +48,10 @@ export class Student {
   @OneToMany((type) => StudentPortfolioUrl, (entity) => entity.student, {
     nullable: true,
   })
-  portfolioUrls: StudentPortfolioUrl[]; //Tablica URL-i do portfolio.
+  portfolioUrls: StudentPortfolioUrlInterface[]; //Tablica URL-i do portfolio.
 
   @OneToMany((type) => StudentProjectUrl, (entity) => entity.student)
-  projectUrls: StudentProjectUrl[]; //Tablica URL-i do GitHuba projektu zaliczeniowego.
+  projectUrls: StudentProjectUrlInterface[]; //Tablica URL-i do GitHuba projektu zaliczeniowego.
 
   @Column({
     type: 'varchar',
@@ -114,5 +119,5 @@ export class Student {
   @OneToOne((type) => User, {
     onDelete: 'CASCADE',
   })
-  user: User;
+  user: UserInterface;
 }

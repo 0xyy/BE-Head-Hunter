@@ -1,4 +1,6 @@
+import { StudentInterface, StudentPortfolioUrlInterface } from 'src/types';
 import {
+  BaseEntity,
   Column,
   Entity,
   JoinColumn,
@@ -8,7 +10,10 @@ import {
 import { Student } from './student.entity';
 
 @Entity()
-export class StudentPortfolioUrl {
+export class StudentPortfolioUrl
+  extends BaseEntity
+  implements StudentPortfolioUrlInterface
+{
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column({
@@ -18,5 +23,5 @@ export class StudentPortfolioUrl {
 
   @ManyToOne((type) => Student, (entity) => entity.portfolioUrls)
   @JoinColumn()
-  student: Student;
+  student: StudentInterface;
 }

@@ -6,7 +6,12 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserInterface, UserRole } from '../types';
+import {
+  StudentCoursesDegreeInterface,
+  StudentInterface,
+  UserInterface,
+  UserRole,
+} from '../types';
 import { Student } from '../student/entities/student.entity';
 import { StudentCoursesDegree } from '../student/entities/student-courses-degree.entity';
 
@@ -50,13 +55,13 @@ export class User extends BaseEntity implements UserInterface {
     onDelete: 'CASCADE',
   })
   @JoinColumn()
-  studentCoursesDegree: StudentCoursesDegree;
+  studentCoursesDegree: StudentCoursesDegreeInterface;
 
   @OneToOne((type) => Student, {
     onDelete: 'CASCADE',
   })
   @JoinColumn()
-  student: Student;
+  student: StudentInterface;
 
   /* relation 1-1  we will merge them when will be added their entities
   @OneToOne((type) => Hr)

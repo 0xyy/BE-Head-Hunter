@@ -1,4 +1,8 @@
 import {
+  StudentBonusProjectUrlInterface,
+  StudentCoursesDegreeInterface,
+} from 'src/types';
+import {
   BaseEntity,
   Column,
   Entity,
@@ -8,7 +12,10 @@ import {
 import { StudentCoursesDegree } from './student-courses-degree.entity';
 
 @Entity()
-export class StudentBonusProjectUrl extends BaseEntity {
+export class StudentBonusProjectUrl
+  extends BaseEntity
+  implements StudentBonusProjectUrlInterface
+{
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column({
@@ -23,5 +30,5 @@ export class StudentBonusProjectUrl extends BaseEntity {
       onDelete: 'CASCADE',
     },
   )
-  studentCoursesDegree: StudentCoursesDegree;
+  studentCoursesDegree: StudentCoursesDegreeInterface;
 }
