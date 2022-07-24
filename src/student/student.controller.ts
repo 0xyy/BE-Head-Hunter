@@ -11,18 +11,7 @@ import {
 @Controller('student')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
-  @Get('test')
-  testAdd() {
-    return this.studentService.insertStudent({
-      email: 'testowy@wp.pl',
-      courseCompletion: 1,
-      courseEngagment: 1,
-      projectDegree: 1,
-      teamProjectDegree: 1,
-      bonusProjectUrls: ['pierwszylink', 'drugi link'],
-      token: '123',
-    });
-  }
+
   @Get()
   findAll(
     @Query('currentPage') currentPage: number,
