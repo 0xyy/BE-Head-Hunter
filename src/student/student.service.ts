@@ -1,17 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { ResponseHrStudentsDto } from './dto/response-hr-students.dto';
 import { StudentDto } from './dto/student.dto';
-import { CvStudentDto } from './dto/cv-student.dto';
-import { ResponseHrStudentsForInterviewDto } from './dto/response-hr-students-for-interview.dto';
+import {
+  ActiveStudentsResponse,
+  StudentResponse,
+} from '../types';
 
 @Injectable()
 export class StudentService {
-  findAll(): ResponseHrStudentsDto {
-    return new ResponseHrStudentsDto();
+  findAll(): ActiveStudentsResponse {
+    return undefined;
   }
 
-  findOne(id: string): StudentDto {
-    return new StudentDto();
+  findOne(id: string): StudentResponse {
+    return undefined;
   }
 
   update(id: string, StudentDto: StudentDto) {
@@ -22,11 +23,15 @@ export class StudentService {
     return `This action reservation a #${id} coursant by #${hrid} hr`;
   }
 
-  findOneCV(id: string): CvStudentDto {
-    return new CvStudentDto();
+  findOneCV(id: string) {
+    return undefined;
   }
 
-  findAllForInterview(hrId: string): ResponseHrStudentsForInterviewDto {
-    return new ResponseHrStudentsForInterviewDto();
+  findAllForInterview(hrId: string) {
+    return undefined;
+  }
+
+  deactivation(studentId: string) {
+    return;
   }
 }

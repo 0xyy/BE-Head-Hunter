@@ -1,9 +1,12 @@
 import { Controller, Get, Body, Patch, Param, Query } from '@nestjs/common';
 import { StudentService } from './student.service';
-import { ResponseHrStudentsDto } from './dto/response-hr-students.dto';
 import { StudentDto } from './dto/student.dto';
-import { ResponseHrStudentsForInterviewDto } from './dto/response-hr-students-for-interview.dto';
-import { CvStudentDto } from './dto/cv-student.dto';
+import {
+  ActiveStudentsResponse,
+  StudentCvProfilResponse,
+  StudentForInterviewResponse,
+  StudentResponse,
+} from '../types/student/student';
 
 @Controller('student')
 export class StudentController {
@@ -14,24 +17,24 @@ export class StudentController {
     @Query('currentPage') currentPage: number,
     @Query('pageSize') pageSize: number,
     @Query('pageCount') pageCount: number,
-  ): ResponseHrStudentsDto {
+  ): ActiveStudentsResponse {
     return this.studentService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): StudentDto {
+  findOne(@Param('id') id: string): StudentResponse {
     return this.studentService.findOne(id);
   }
 
   @Get('interview/:hrId')
   findAllForInterview(
     @Param('hrId') hrId: string,
-  ): ResponseHrStudentsForInterviewDto {
+  ): StudentForInterviewResponse {
     return this.studentService.findAllForInterview(hrId);
   }
 
   @Get('cv/:id')
-  findOneCV(@Param('id') id: string): CvStudentDto {
+  findOneCV(@Param('id') id: string): StudentCvProfilResponse {
     return this.studentService.findOneCV(id);
   }
 
@@ -43,5 +46,9 @@ export class StudentController {
   @Patch('reservation/:id/:hrid')
   reservation(@Param('id') id: string, @Param('hrid') hrid: string) {
     return this.studentService.reservation(id, hrid);
+  }
+  @Patch('deactivation/:studentId')
+  deactivation(@Param('studentId') studentId: string) {
+    return this.studentService.deactivation(studentId);
   }
 }
