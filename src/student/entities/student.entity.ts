@@ -1,4 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { StudentPortfolioUrl } from './student-portfolio-url.entity';
 import { StudentProjectUrl } from './student-project-url.entity';
 import {
@@ -6,6 +12,7 @@ import {
   ExpectedTypeWork,
   StudentStatus,
 } from '../../types';
+import { User } from '../../user/user.entity';
 
 @Entity()
 export class Student {
@@ -103,4 +110,7 @@ export class Student {
     default: 0,
   })
   status: StudentStatus;
+
+  @OneToOne((type) => User)
+  user: User;
 }

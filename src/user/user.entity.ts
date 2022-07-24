@@ -1,5 +1,13 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { UserInterface, UserRole } from '../types';
+import { Student } from '../student/entities/student.entity';
 
 @Entity()
 export class User extends BaseEntity implements UserInterface {
@@ -29,9 +37,10 @@ export class User extends BaseEntity implements UserInterface {
   active: boolean;
   @Column()
   role: UserRole;
-  /* relation 1-1  we will merge them when will be added their entities
   @OneToOne((type) => Student)
+  @JoinColumn()
   student: Student;
+  /* relation 1-1  we will merge them when will be added their entities
   @OneToOne((type) => Hr)
   hr: Hr;
   */
