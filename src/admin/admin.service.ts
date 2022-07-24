@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { InsertStudentDto } from 'src/student/dto/insert-student.dto';
 import { AdminStudentService } from '../student/admin-student.service';
-import * as fs from 'fs';
 
 @Injectable()
 export class AdminService {
@@ -9,24 +9,24 @@ export class AdminService {
     private adminStudentService: AdminStudentService,
   ) {}
 
-  async CreateUsersFromFile(jsonfile: File) {
-    fs.readFile(jsonfile, 'utf8', (error, data) => {
-      // 2
-      if (error) {
-        console.log(`ERROR: ${error}`);
-        return;
-      }
+  async CreateUsersFromFile(jsonfile: any) {
+    console.log(jsonfile);
+    // if typ pliku
+    // if czy to json
+    const userData = JSON.parse(
+      jsonfile.buffer.toString(),
+    ) as InsertStudentDto[];
+    userData.forEach(async (user) => {
+      //validacja coures notes
+      //czy user z danym email istnieje
+      //czy github w array
 
-      // 3
-      const jsonData = JSON.parse(data);
+      const { id } = await this.adminStudentService.insertStudent(user);
 
-      // 4
-      const parsedJsonData = jsonData;
-
-      // 5
-      // Check the keys that jsonData has
-      console.log(Object.keys(jsonData));
+      //generate activetoken
+      //send email
     });
+
     return false;
   }
 }
