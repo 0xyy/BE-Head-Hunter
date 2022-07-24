@@ -1,41 +1,42 @@
-import {Body, Controller, Get, Inject, Patch} from '@nestjs/common';
-import {AdminService} from "./admin.service";
-import {RecoverPasswordDto} from "./dto/recoverPasswordDto";
-import {EditPasswordDto} from "./dto/editPasswordDto";
-import {
-    EditPasswordResponse,
-    RecoverPasswordResponse,
-} from '../types';
+import { Body, Controller, Get, Inject, Patch, Post } from '@nestjs/common';
+import { RecoverPasswordDto } from './dto/recoverPasswordDto';
+import { EditPasswordDto } from './dto/editPasswordDto';
+import { EditPasswordResponse, RecoverPasswordResponse } from '../types';
+import { UserService } from '../user/user.service';
+import { HrService } from '../hr/hr.service';
+import { AdminService } from './admin.service';
 
 @Controller('admin')
 export class AdminController {
-    constructor(@Inject(AdminService) private userService: AdminService) {}
+  constructor(
+    @Inject(UserService) private userService: UserService,
+    @Inject(HrService) private hrService: HrService,
+    @Inject(AdminService) private adminService: AdminService,
+  ) {}
 
-    @Get('/allCoursants')
-    getAllCoursants(): Promise<CoursantEntity[]> {
-        return this.coursantService.getAll()
-    }
+  //import all coursant from file
+  @Post(`/createUsersFromFile`)
+  importUsersFromJSONFile(@Body() jsonfile: File): Promise<Boolean> {
+    return this.adminService.CreateUsersFromFile(jsonfile);
+  }
+  //add new hr
+  @Post(`/addHr`)
+  addHRUser() {
+    // @Body(), HR DTO
+    // return this.hrService.createHRUser(data)
+  }
 
-    @Get('/allHR')
-    getAllHR(): Promise<HREntity[]> {
-        return this.hrService.getAll()
-    }
+  @Patch(`/edit`)
+  editPassword(
+    @Body() password: EditPasswordDto,
+  ): Promise<EditPasswordResponse> {
+    return this.userService.editPassword(password);
+  }
 
-    //import all coursant from file
-
-    //add new hr
-
-    @Patch(`/edit`)
-    editPassword(
-        @Body() password: EditPasswordDto,
-    ): Promise<EditPasswordResponse> {
-        return this.userService.editPassword(password);
-    }
-
-    @Get(`/recover`)
-    recoverPassword(
-        @Body() recover: RecoverPasswordDto,
-    ): Promise<RecoverPasswordResponse> {
-        return this.userService.recover(recover);
-    }
+  @Get(`/recover`)
+  recoverPassword(
+    @Body() recover: RecoverPasswordDto,
+  ): Promise<RecoverPasswordResponse> {
+    return this.userService.recover(recover);
+  }
 }
