@@ -59,7 +59,10 @@ export class AdminStudentService {
       await this.insertBonusProjectUrl(bonusProjectUrls, studentDegree);
       user.studentCoursesDegree = studentDegree;
       await user.save();
-      return { isSuccess: true };
+      return {
+        userId: user.id,
+        isSuccess: true,
+      };
     } catch (e) {
       throw new Error();
     }

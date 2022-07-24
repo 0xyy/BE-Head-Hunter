@@ -1,7 +1,7 @@
 import { HrStudentForInterviewDto } from '../../student/dto/hr-student-for-interview.dto';
 import { UserInterface } from '../user';
 
-export interface StudentInterface {
+export interface StudentInfoInterface {
   id: string;
   tel?: string;
   firstName: string;
@@ -41,13 +41,13 @@ export interface StudentCoursesDegreeInterface {
 export interface StudentPortfolioUrlInterface {
   id: string;
   projectUrl: string;
-  student: StudentInterface;
+  studentInfo: StudentInfoInterface;
 }
 
 export interface StudentProjectUrlInterface {
   id: string;
   projectUrl: string;
-  student: StudentInterface;
+  studentInfo: StudentInfoInterface;
 }
 
 export enum StudentStatus {
@@ -70,10 +70,23 @@ export enum ExpectedContractType {
   UZUOD,
 }
 
-export type StudentResponse = {
-  isSuccess: boolean;
-};
-export type ActiveStudentsResponse = {};
+export type StudentResponse =
+  | {
+      isSuccess: false;
+    }
+  | {
+      userId: string;
+      isSuccess: true;
+    };
+export type ActiveStudentsResponse =
+  | {
+      isSuccess: true;
+      pageCount: number;
+    }
+  | {
+      message: string;
+      isSuccess: false;
+    };
 export type StudentForInterviewResponse = {
   currentPage: number;
   pageSize: number;

@@ -1,76 +1,77 @@
+import {
+  ExpectedContractType,
+  ExpectedTypeWork,
+  StudentStatus,
+} from '../../types';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Max,
+  MaxLength,
+  MinLength,
+  ValidateIf,
+} from 'class-validator';
+
 export class StudentDto {
-  id: number;
-  /**
-        Adres e-mail.Zawiera @. Unikalny w systemie.
-    */
-  email: string;
-
-  tel: string;
+  @IsString()
+  @IsNotEmpty()
+  userId: string;
+  @IsString()
+  @ValidateIf((object, value) => value !== null)
+  studentInfoId: string | null;
+  @IsString()
+  @MaxLength(15)
+  @ValidateIf((object, value) => value !== null)
+  tel: string | null;
+  @IsString()
+  @MinLength(2)
+  @MaxLength(60)
   firstName: string;
+  @IsString()
+  @MinLength(2)
+  @MaxLength(100)
   lastName: string;
-
-  /**
-        Login GitHuba.Należy sprawdzić za pomocą API GH lub innym sposobem, czy taka osoba istnieje. Unikalny w systemie.
-    */
+  @IsString()
+  @MinLength(2)
+  @MaxLength(255)
   githubUsername: string;
-
-  /**
-        Tablica URL-i do portfolio.
-    */
-  portfolioUrls: string[];
-
-  /**
-        Tablica URL-i do GitHuba projektu zaliczeniowego.
-    */
+  @IsString({ each: true })
+  @ValidateIf((object, value) => value !== null)
+  portfolioUrls: string[] | null;
+  @IsString({ each: true })
   projectUrls: string[];
-
-  bio: string;
-
-  /**  Oczekiwanie w stosunku do zatrudnienia:
-   *  Preferowanego miejsce pracy
-   *  Wybór preferowanego miejsca pracy:
-   *  Na miejscu;
-   *  Gotowość do przeprowadzki;
-   *  Wyłącznie zdalnie;
-   *  Hybrydowo
-   *  Bez znaczenia (domyślnie).
-   */
-
-  /** Docelowe miasto, gdzie chce pracować kandydat */
-  targetWorkCity: string;
-
-  /**
-   *   Oczekiwanie w stosunku do zatrudnienia:
-   *   Oczekiwany typ kontraktu Oczekiwany typ kontraktu.
-   *   Wybór:
-   *   Tylko UoP;
-   *   Możliwe B2B;
-   *   Możliwe UZ/UoD;
-   *   Brak preferencji (domyślnie).
-   */
-  expectedContractType: string;
-
-  /** Oczekiwane wynagrodzenie miesięczne netto */
-  expectedSalary: string;
-
-  /** Czy kandydat wyraża zgodę na odbycie bezpłatnych praktyk/stażu na początek  */
-  canTakeApprenticeship: string;
-
-  /** Ilość miesięcy doświadczenia komercyjnego kandydata w programowaniu  */
-  monthsOfCommercialExp: string;
-
-  /**
-   *   Przebieg edukacji;
-   */
-  education: string;
-
-  /**
-   *   Przebieg kariery zawodowej.
-   */
-  workExperience: string;
-
-  /**
-        Kursy i certyfikaty związane z programowaniem.
-    */
-  courses: string;
+  @IsString()
+  @MaxLength(400)
+  @ValidateIf((object, value) => value !== null)
+  bio: string | null;
+  @IsString()
+  @ValidateIf((object, value) => value !== null)
+  targetWorkCity: string | null;
+  @IsNumber()
+  @Max(3)
+  expectedTypeWork: ExpectedTypeWork;
+  @IsNumber()
+  @Max(3)
+  expectedContractType: ExpectedContractType;
+  @IsString()
+  @ValidateIf((object, value) => value !== null)
+  education: string | null;
+  @IsString()
+  @ValidateIf((object, value) => value !== null)
+  expectedSalary: string | null;
+  @IsBoolean()
+  canTakeApprenticeship: boolean;
+  @IsNumber()
+  monthsOfCommercialExp: number;
+  @IsString()
+  @ValidateIf((object, value) => value !== null)
+  workExperience: string | null;
+  @IsString()
+  @ValidateIf((object, value) => value !== null)
+  courses: string | null;
+  @IsNumber()
+  @Max(2)
+  status: StudentStatus;
 }

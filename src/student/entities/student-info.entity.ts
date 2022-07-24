@@ -11,7 +11,7 @@ import { StudentProjectUrl } from './student-project-url.entity';
 import {
   ExpectedContractType,
   ExpectedTypeWork,
-  StudentInterface,
+  StudentInfoInterface,
   StudentPortfolioUrlInterface,
   StudentProjectUrlInterface,
   StudentStatus,
@@ -20,7 +20,7 @@ import {
 import { User } from '../../user/user.entity';
 
 @Entity()
-export class Student extends BaseEntity implements StudentInterface {
+export class StudentInfo extends BaseEntity implements StudentInfoInterface {
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column({
@@ -45,12 +45,12 @@ export class Student extends BaseEntity implements StudentInterface {
   })
   githubUsername: string; //Należy sprawdzić za pomocą API GH lub innym sposobem, czy taka osoba istnieje.
 
-  @OneToMany((type) => StudentPortfolioUrl, (entity) => entity.student, {
+  @OneToMany((type) => StudentPortfolioUrl, (entity) => entity.studentInfo, {
     nullable: true,
   })
   portfolioUrls: StudentPortfolioUrlInterface[]; //Tablica URL-i do portfolio.
 
-  @OneToMany((type) => StudentProjectUrl, (entity) => entity.student)
+  @OneToMany((type) => StudentProjectUrl, (entity) => entity.studentInfo)
   projectUrls: StudentProjectUrlInterface[]; //Tablica URL-i do GitHuba projektu zaliczeniowego.
 
   @Column({

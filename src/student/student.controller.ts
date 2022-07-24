@@ -13,12 +13,12 @@ export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
   @Get()
-  findAll(
+  AllActiveStudents(
     @Query('currentPage') currentPage: number,
     @Query('pageSize') pageSize: number,
-    @Query('pageCount') pageCount: number,
-  ): ActiveStudentsResponse {
-    return this.studentService.findAll();
+    // @Query('pageCount') pageCount: number,
+  ): Promise<ActiveStudentsResponse> {
+    return this.studentService.findAllActiveStudents(currentPage || 0, 1);
   }
 
   @Get(':id')
@@ -38,9 +38,9 @@ export class StudentController {
     return this.studentService.findOneCV(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() StudentDto: StudentDto) {
-    return this.studentService.update(id, StudentDto);
+  @Patch('update')
+  update(@Body() StudentDto: StudentDto) {
+    return this.studentService.update(StudentDto);
   }
 
   @Patch('reservation/:id/:hrid')
