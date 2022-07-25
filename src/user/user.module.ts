@@ -7,5 +7,6 @@ import { MailModule } from '../mail/mail.module';
   imports: [forwardRef(() => MailModule)],
   controllers: [UserController],
   providers: [UserService],
+  exports: [UserService],
 })
 export class UserModule {}
