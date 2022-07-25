@@ -21,15 +21,43 @@ export class AdminService {
       jsonfile.buffer.toString(),
     ) as InsertStudentDto[];
 
-    //validacja coures notes
     //czy user z danym email istnieje
-    //czy github w array
     for await (const user of userData) {
+      if (!user.email.includes('@') || typeof user.email !== 'string') {
+        return { isSuccess: false };
+      }
+
+      if (!user.projectDegree || typeof user.projectDegree !== 'number') {
+        return { isSuccess: false };
+      }
+
+      if (!user.courseEngagment || typeof user.courseEngagment !== 'number') {
+        return { isSuccess: false };
+      }
+
+      if (!user.courseCompletion || typeof user.courseCompletion !== 'number') {
+        return { isSuccess: false };
+      }
+
+      if (
+        !user.teamProjectDegree ||
+        typeof user.teamProjectDegree !== 'number'
+      ) {
+        return { isSuccess: false };
+      }
+
+      if (!user.bonusProjectUrls || typeof user.bonusProjectUrls !== 'object') {
+        //is github proj is not empty
+        return { isSuccess: false };
+      }
+
       const response = await this.adminStudentService.insertStudent(user);
       console.log(response, 'res');
       if (response.isSuccess) {
         // response.userId;
+
         //generate token ma byc public
+
         // const token = await this.authService.generateToken(response.userId);
         console.log(user.email, user);
         await this.mailService.sendMail(
