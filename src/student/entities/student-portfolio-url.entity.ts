@@ -21,7 +21,9 @@ export class StudentPortfolioUrl
   })
   projectUrl: string;
 
-  @ManyToOne((type) => StudentInfo, (entity) => entity.portfolioUrls)
+  @ManyToOne((type) => StudentInfo, (entity) => entity.portfolioUrls, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   studentInfo: StudentInfoInterface;
 }

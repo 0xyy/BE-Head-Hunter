@@ -1,4 +1,12 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { StudentProjectUrlInterface } from '../../types';
+import { StudentInfo } from '../../student/entities/student-info.entity';
 
 @Entity()
 export class Hr extends BaseEntity {
@@ -33,6 +41,9 @@ export class Hr extends BaseEntity {
     nullable: false,
   })
   maxReservedStudents: number;
+
+  @OneToMany((type) => StudentInfo, (entity) => entity.hr)
+  studentsToInterview: StudentProjectUrlInterface[];
 
   // @AfterRemove()
   // zmiana statusu rezerwacji usera
