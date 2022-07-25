@@ -7,10 +7,13 @@ import {
   StudentInfoUpdateResponse,
   StudentResponse,
   UserInterface,
+  UserRole,
 } from '../types';
 import { StudentInfo } from './entities/student-info.entity';
 import { User } from '../user/user.entity';
 import { HttpService } from '@nestjs/axios';
+import { DeactivationStudentDto } from './dto/deactivation-student.dto';
+import { ReservationStudentDto } from './dto/reservation-student.dto';
 
 @Injectable()
 export class StudentService {
@@ -143,8 +146,7 @@ export class StudentService {
     };
   }
 
-  reservation() {
-    // return `This action reservation a #${id} coursant by #${hrid} hr`;
+  async reservation({ userId, hrId }: ReservationStudentDto) {
   }
 
   findOneCV(id: string) {
@@ -155,7 +157,17 @@ export class StudentService {
     return undefined;
   }
 
-  deactivation() {
-    return;
+  async deactivation({ userId }: DeactivationStudentDto) {
+    const { affected } = await User.update(
+      { id: userId, role: UserRole.STUDENT, active: true },
+      { active: false },
+    );
+    if (affected === 0) {
+      return {
+        isSuccess: false,
+      };
+    } else {
+      return { isSuccess: true };
+    }
   }
 }

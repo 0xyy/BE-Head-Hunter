@@ -47,10 +47,10 @@ export class StudentController {
 
   @Patch('reservation/:id/:hrid')
   reservation(@Body() ReservationStudentDto: ReservationStudentDto) {
-    return this.studentService.reservation();
+    return this.studentService.reservation(ReservationStudentDto);
   }
   @Patch('deactivation')
   deactivation(@Body() DeactivationStudentDto: DeactivationStudentDto) {
-    return this.studentService.deactivation();
+    return this.studentService.deactivation(DeactivationStudentDto);
   }
 }
