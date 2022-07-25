@@ -1,4 +1,4 @@
-import { AfterRemove, BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Hr extends BaseEntity {
@@ -29,7 +29,7 @@ export class Hr extends BaseEntity {
 
   @Column({
     type: 'int',
-    length: 3,
+    width: 3,
     nullable: false,
   })
   maxReservedStudents: number;
@@ -37,4 +37,3 @@ export class Hr extends BaseEntity {
   // @AfterRemove()
   // zmiana statusu rezerwacji usera
 }
-

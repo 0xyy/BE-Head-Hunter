@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Patch } from '@nestjs/common';
+import { Body, Controller, Inject, Patch, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { EditPasswordDto } from './dto/edit-password.dto';
 import {
@@ -23,7 +23,7 @@ export class UserController {
   ): Promise<EditPasswordResponse> {
     return this.userService.editPassword(password);
   }
-  @Get(`/recover`)
+  @Post(`/recover`)
   recoverPassword(
     @Body() recover: RecoverPasswordDto,
   ): Promise<RecoverPasswordResponse> {
