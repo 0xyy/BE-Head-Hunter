@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { StudentDto } from './dto/student.dto';
+
 import {
   ActiveStudentsResponse,
   StudentInfoInterface,
@@ -14,6 +15,14 @@ import { HttpService } from '@nestjs/axios';
 @Injectable()
 export class StudentService {
   constructor(private httpService: HttpService) {}
+
+  private async getUser(id: string): Promise<User | null> {
+    return await User.findOne({
+      where: { id },
+      relations: ['studentInfo'],
+    });
+  }
+
   async findAllActiveStudents(
     currentPage,
     pageSize,
@@ -43,7 +52,6 @@ export class StudentService {
     }
     student.avatarUrl = avatarUrl || null;
     student.user = user;
-    console.log(avatarUrl);
     try {
       return await student.save();
     } catch (e) {
@@ -66,7 +74,6 @@ export class StudentService {
       throw new Error('Aktualizacja kursanta nie powiodła się');
     }
   }
-
   findOne(id: string): StudentResponse {
     return undefined;
   }
@@ -86,10 +93,7 @@ export class StudentService {
     }
   }
   async update(studentInfo: StudentDto): Promise<StudentInfoUpdateResponse> {
-    const user = await User.findOne({
-      where: { id: studentInfo.userId },
-      relations: ['studentInfo'],
-    });
+    const user = await this.getUser(studentInfo.userId);
     const avatarUrl = await this.findGithubAvatar(studentInfo.githubUsername);
     console.log(avatarUrl);
     if (!avatarUrl.isSuccess) {
@@ -139,8 +143,8 @@ export class StudentService {
     };
   }
 
-  reservation(id: string, hrid: string) {
-    return `This action reservation a #${id} coursant by #${hrid} hr`;
+  reservation() {
+    // return `This action reservation a #${id} coursant by #${hrid} hr`;
   }
 
   findOneCV(id: string) {
@@ -151,7 +155,7 @@ export class StudentService {
     return undefined;
   }
 
-  deactivation(studentId: string) {
+  deactivation() {
     return;
   }
 }

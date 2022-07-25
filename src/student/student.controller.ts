@@ -7,6 +7,8 @@ import {
   StudentForInterviewResponse,
   StudentResponse,
 } from '../types';
+import { DeactivationStudentDto } from './dto/deactivation-student.dto';
+import { ReservationStudentDto } from './dto/reservation-student.dto';
 
 @Controller('student')
 export class StudentController {
@@ -44,11 +46,11 @@ export class StudentController {
   }
 
   @Patch('reservation/:id/:hrid')
-  reservation(@Param('id') id: string, @Param('hrid') hrid: string) {
-    return this.studentService.reservation(id, hrid);
+  reservation(@Body() ReservationStudentDto: ReservationStudentDto) {
+    return this.studentService.reservation();
   }
-  @Patch('deactivation/:studentId')
-  deactivation(@Param('studentId') studentId: string) {
-    return this.studentService.deactivation(studentId);
+  @Patch('deactivation')
+  deactivation(@Body() DeactivationStudentDto: DeactivationStudentDto) {
+    return this.studentService.deactivation();
   }
 }
