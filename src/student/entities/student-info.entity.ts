@@ -2,6 +2,7 @@ import {
   BaseEntity,
   Column,
   Entity,
+  JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -59,7 +60,11 @@ export class StudentInfo extends BaseEntity implements StudentInfoInterface {
     nullable: true,
   })
   bio: string;
-
+  @Column({
+    default: null,
+    nullable: true,
+  })
+  avatarUrl: string | null;
   @Column({ type: 'tinyint', default: 0 })
   expectedTypeWork: ExpectedTypeWork;
 
@@ -119,5 +124,6 @@ export class StudentInfo extends BaseEntity implements StudentInfoInterface {
   @OneToOne((type) => User, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn()
   user: UserInterface;
 }

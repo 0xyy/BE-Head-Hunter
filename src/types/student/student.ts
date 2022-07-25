@@ -10,6 +10,7 @@ export interface StudentInfoInterface {
   portfolioUrls?: StudentPortfolioUrlInterface[]; //Tablica URL-i do portfolio.
   projectUrls: StudentProjectUrlInterface[]; //Tablica URL-i do GitHuba projektu zaliczeniowego.
   bio?: string;
+  avatarUrl?: string;
   expectedTypeWork: ExpectedTypeWork;
   targetWorkCity?: string;
   expectedContractType: ExpectedContractType;
@@ -93,6 +94,7 @@ export type StudentInfoUpdateResponse =
       isSuccess: true;
     }
   | {
+      message: string;
       isSuccess: false;
     };
 export type StudentForInterviewResponse = {

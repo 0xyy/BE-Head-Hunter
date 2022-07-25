@@ -5,12 +5,15 @@ import {
   StudentInfoInterface,
   StudentInfoUpdateResponse,
   StudentResponse,
+  UserInterface,
 } from '../types';
 import { StudentInfo } from './entities/student-info.entity';
 import { User } from '../user/user.entity';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class StudentService {
+  constructor(private httpService: HttpService) {}
   async findAllActiveStudents(
     currentPage,
     pageSize,
@@ -30,16 +33,21 @@ export class StudentService {
   }
 
   private async createStudentInfo(
+    user: UserInterface,
     studentInfo: StudentDto,
+    avatarUrl: string | null,
   ): Promise<StudentInfoInterface> {
     const student = new StudentInfo();
     for (const key of Object.keys(studentInfo)) {
       student[key] = studentInfo[key];
     }
+    student.avatarUrl = avatarUrl || null;
+    student.user = user;
+    console.log(avatarUrl);
     try {
       return await student.save();
     } catch (e) {
-      throw new Error();
+      throw new Error('Stworzenie kursanta nie powiodło się');
     }
   }
 
@@ -55,26 +63,59 @@ export class StudentService {
       await oldStudentInfo.save();
       return oldStudentInfo;
     } catch (e) {
-      throw new Error();
+      throw new Error('Aktualizacja kursanta nie powiodła się');
     }
   }
 
   findOne(id: string): StudentResponse {
     return undefined;
   }
-
+  async findGithubAvatar(name) {
+    try {
+      const github = await this.httpService.axiosRef.get(
+        `https://api.github.com/users/${name}`,
+      );
+      return {
+        message: github.data.avatar_url || '',
+        isSuccess: true,
+      };
+    } catch (e) {
+      return {
+        isSuccess: false,
+      };
+    }
+  }
   async update(studentInfo: StudentDto): Promise<StudentInfoUpdateResponse> {
     const user = await User.findOne({
       where: { id: studentInfo.userId },
       relations: ['studentInfo'],
     });
+    const avatarUrl = await this.findGithubAvatar(studentInfo.githubUsername);
+    console.log(avatarUrl);
+    if (!avatarUrl.isSuccess) {
+      return {
+        message: 'Nie znaleziono konta github.',
+        isSuccess: false,
+      };
+    }
     if (!user) {
       return {
+        message: 'Nie znaleziono użytkownika.',
+        isSuccess: false,
+      };
+    }
+    if (!user.active) {
+      return {
+        message: 'Użytkownik jest nieaktywny.',
         isSuccess: false,
       };
     }
     if (!user.studentInfo && user.active) {
-      const newStudent = await this.createStudentInfo(studentInfo);
+      const newStudent = await this.createStudentInfo(
+        user,
+        studentInfo,
+        avatarUrl.message,
+      );
       user.studentInfo = newStudent;
       await user.save();
 
@@ -93,6 +134,7 @@ export class StudentService {
       };
     }
     return {
+      message: 'Aktualizacja kursanta nie powiodła się',
       isSuccess: false,
     };
   }

@@ -7,11 +7,11 @@ import {
   IsBoolean,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   Max,
   MaxLength,
   MinLength,
-  ValidateIf,
 } from 'class-validator';
 
 export class StudentDto {
@@ -23,12 +23,15 @@ export class StudentDto {
   // studentInfoId: string | null;
   @IsString()
   @MaxLength(15)
-  @ValidateIf((object, value) => value !== null)
-  tel: string | null;
+  // @ValidateIf((object, value) => value !== null)
+  @IsOptional()
+  tel?: string;
   @IsString()
   @MinLength(2)
   @MaxLength(60)
+  @IsNotEmpty()
   firstName: string;
+  @IsNotEmpty()
   @IsString()
   @MinLength(2)
   @MaxLength(100)
@@ -36,42 +39,50 @@ export class StudentDto {
   @IsString()
   @MinLength(2)
   @MaxLength(255)
+  @IsNotEmpty()
   githubUsername: string;
   @IsString({ each: true })
-  @ValidateIf((object, value) => value !== null)
-  portfolioUrls: string[] | null;
+  @IsOptional()
+  portfolioUrls?: string[];
   @IsString({ each: true })
+  @IsNotEmpty()
   projectUrls: string[];
   @IsString()
   @MaxLength(400)
-  @ValidateIf((object, value) => value !== null)
-  bio: string | null;
+  @IsOptional()
+  bio?: string;
   @IsString()
-  @ValidateIf((object, value) => value !== null)
-  targetWorkCity: string | null;
+  @IsOptional()
+  targetWorkCity?: string;
   @IsNumber()
   @Max(3)
+  @IsNotEmpty()
   expectedTypeWork: ExpectedTypeWork;
   @IsNumber()
   @Max(3)
+  @IsNotEmpty()
   expectedContractType: ExpectedContractType;
   @IsString()
-  @ValidateIf((object, value) => value !== null)
-  education: string | null;
+  @IsOptional()
+  education?: string;
   @IsString()
-  @ValidateIf((object, value) => value !== null)
-  expectedSalary: string | null;
+  @IsOptional()
+  expectedSalary?: string;
   @IsBoolean()
+  @IsNotEmpty()
   canTakeApprenticeship: boolean;
   @IsNumber()
+  @IsNotEmpty()
+  @Max(999)
   monthsOfCommercialExp: number;
   @IsString()
-  @ValidateIf((object, value) => value !== null)
-  workExperience: string | null;
+  @IsOptional()
+  workExperience?: string;
   @IsString()
-  @ValidateIf((object, value) => value !== null)
-  courses: string | null;
+  @IsOptional()
+  courses?: string;
   @IsNumber()
   @Max(2)
+  @IsNotEmpty()
   status: StudentStatus;
 }
