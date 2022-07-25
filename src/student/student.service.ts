@@ -6,6 +6,7 @@ import {
   StudentInfoInterface,
   StudentInfoUpdateResponse,
   StudentResponse,
+  StudentStatus,
   UserInterface,
   UserRole,
 } from '../types';
@@ -14,6 +15,7 @@ import { User } from '../user/user.entity';
 import { HttpService } from '@nestjs/axios';
 import { DeactivationStudentDto } from './dto/deactivation-student.dto';
 import { ReservationStudentDto } from './dto/reservation-student.dto';
+import { Hr } from '../hr/entities/hr.entity';
 
 @Injectable()
 export class StudentService {
@@ -98,7 +100,6 @@ export class StudentService {
   async update(studentInfo: StudentDto): Promise<StudentInfoUpdateResponse> {
     const user = await this.getUser(studentInfo.userId);
     const avatarUrl = await this.findGithubAvatar(studentInfo.githubUsername);
-    console.log(avatarUrl);
     if (!avatarUrl.isSuccess) {
       return {
         message: 'Nie znaleziono konta github.',
@@ -118,6 +119,16 @@ export class StudentService {
       };
     }
     if (!user.studentInfo && user.active) {
+      const checkGithub = await StudentInfo.findOne({
+        where: { githubUsername: studentInfo.githubUsername },
+      });
+      if (!!checkGithub) {
+        return {
+          message:
+            'Konto o takiej nazwie użytkownika Github jest juz zarejestrowane.',
+          isSuccess: false,
+        };
+      }
       const newStudent = await this.createStudentInfo(
         user,
         studentInfo,
@@ -147,6 +158,53 @@ export class StudentService {
   }
 
   async reservation({ userId, hrId }: ReservationStudentDto) {
+    const student = await this.getUser(userId);
+    const { active, role } = student;
+    const { status } = student.studentInfo;
+    const hr = await Hr.findOne({
+      where: { id: hrId },
+      relations: ['studentsToInterview'],
+    });
+    const { maxReservedStudents } = hr;
+    if (maxReservedStudents <= hr.studentsToInterview.length) {
+      return {
+        message: `Nie możesz dodać więcej kursantów "Do Rozmowy.`,
+        isSuccess: false,
+      };
+    }
+    if (!student) {
+      return {
+        message: 'Nie ma takiego studenta',
+        isSuccess: false,
+      };
+    }
+    if (!hr) {
+      return {
+        message: 'Nie ma takiego hr',
+        isSuccess: false,
+      };
+    }
+    if (
+      active === false ||
+      role !== UserRole.STUDENT ||
+      status !== StudentStatus.ACCESSIBLE
+    ) {
+      return {
+        message: 'Nie można dodać studenta.',
+        isSuccess: false,
+      };
+    }
+    const { affected } = await StudentInfo.update(
+      { id: student.studentInfo.id, status: StudentStatus.ACCESSIBLE },
+      { status: StudentStatus.PENDING, hr },
+    );
+    if (affected === 0) {
+      return {
+        isSuccess: false,
+      };
+    } else {
+      return { isSuccess: true };
+    }
   }
 
   findOneCV(id: string) {

@@ -45,7 +45,7 @@ export class StudentController {
     return this.studentService.update(StudentDto);
   }
 
-  @Patch('reservation/:id/:hrid')
+  @Patch('reservation')
   reservation(@Body() ReservationStudentDto: ReservationStudentDto) {
     return this.studentService.reservation(ReservationStudentDto);
   }

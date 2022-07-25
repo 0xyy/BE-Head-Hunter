@@ -3,6 +3,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -19,6 +20,7 @@ import {
   UserInterface,
 } from '../../types';
 import { User } from '../../user/user.entity';
+import { Hr } from '../../hr/entities/hr.entity';
 
 @Entity()
 export class StudentInfo extends BaseEntity implements StudentInfoInterface {
@@ -126,4 +128,10 @@ export class StudentInfo extends BaseEntity implements StudentInfoInterface {
   })
   @JoinColumn()
   user: UserInterface;
+
+  @ManyToOne((type) => Hr, (entity) => entity.studentsToInterview, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  hr: Hr;
 }
