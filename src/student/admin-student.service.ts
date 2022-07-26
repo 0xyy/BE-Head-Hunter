@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
   StudentCoursesDegreeInterface,
   StudentResponse,
@@ -46,10 +46,15 @@ export class AdminStudentService {
   public async insertStudent(
     student: InsertStudentDto,
   ): Promise<StudentResponse> {
+    const { email, token, bonusProjectUrls } = student;
+    const checkUser = await User.findOne({ where: { email: email } });
+    if (checkUser) {
+      throw new HttpException(
+        `Adres e-mail: "${email}" jest w bazie danych.`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
     try {
-      const { email, token, bonusProjectUrls } = student;
-      const checkUser = await User.findOne({ where: { email: email } });
-      if (checkUser) return { isSuccess: false };
       const user = new User();
       user.email = email;
       user.role = UserRole.STUDENT;
@@ -64,7 +69,7 @@ export class AdminStudentService {
         isSuccess: true,
       };
     } catch (e) {
-      throw new Error();
+      throw e(`Błąd dodania kursanta "${email}" do bazy danych.`);
     }
   }
 }
