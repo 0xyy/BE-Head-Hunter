@@ -3,6 +3,11 @@ import { UserInterface } from '../user';
 
 export interface StudentInfoInterface {
   id: string;
+  courseCompletion: number;
+  courseEngagment: number;
+  projectDegree: number;
+  teamProjectDegree: number;
+  bonusProjectUrls: StudentBonusProjectUrlInterface[];
   tel?: string;
   firstName: string;
   lastName: string;
@@ -27,16 +32,7 @@ export interface StudentInfoInterface {
 export interface StudentBonusProjectUrlInterface {
   id: string;
   projectUrl: string;
-  studentCoursesDegree: StudentCoursesDegreeInterface;
-}
-
-export interface StudentCoursesDegreeInterface {
-  id: string;
-  courseCompletion: number;
-  courseEngagment: number;
-  projectDegree: number;
-  teamProjectDegree: number;
-  bonusProjectUrls: StudentBonusProjectUrlInterface[];
+  studentInfo: StudentInfoInterface;
 }
 
 export interface StudentPortfolioUrlInterface {
@@ -71,14 +67,10 @@ export enum ExpectedContractType {
   UZUOD,
 }
 
-export type StudentResponse =
-  | {
-      isSuccess: false;
-    }
-  | {
-      userId: string;
-      isSuccess: true;
-    };
+export type StudentResponse = {
+  userId: string;
+  isSuccess: true;
+};
 export type ActiveStudentsResponse =
   | {
       isSuccess: true;
