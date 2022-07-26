@@ -1,7 +1,7 @@
 import {
   StudentBonusProjectUrlInterface,
-  StudentCoursesDegreeInterface,
-} from 'src/types';
+  StudentInfoInterface,
+} from '../../types';
 import {
   BaseEntity,
   Column,
@@ -9,7 +9,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { StudentCoursesDegree } from './student-courses-degree.entity';
+import { StudentInfo } from './student-info.entity';
 
 @Entity()
 export class StudentBonusProjectUrl
@@ -23,12 +23,8 @@ export class StudentBonusProjectUrl
   })
   projectUrl: string;
 
-  @ManyToOne(
-    (type) => StudentCoursesDegree,
-    (entity) => entity.bonusProjectUrls,
-    {
-      onDelete: 'CASCADE',
-    },
-  )
-  studentCoursesDegree: StudentCoursesDegreeInterface;
+  @ManyToOne((type) => StudentInfo, (entity) => entity.bonusProjectUrls, {
+    onDelete: 'CASCADE',
+  })
+  studentInfo: StudentInfoInterface;
 }
