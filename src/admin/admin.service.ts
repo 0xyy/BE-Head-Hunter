@@ -124,13 +124,19 @@ export class AdminService {
     return failedUsersToInsert;
   }
 
-  createHr(body: CreateHrDto) {
-    //zwroc cos
-    this.hrService.createHr(body);
-
-    //if yes send email i token
-
+  async createHr(body: CreateHrDto) {
+    const res = await this.hrService.createHr(body);
+    if (res.isSuccess) {
+      const token = await this.authService.generateToken(res.userId);
+      await this.mailService.sendMail(
+        body.email,
+        'rejestracja kldfjskldf',
+        'html do zrobienia',
+      );
+      return {
+        isSuccess: true,
+      };
+    }
     return;
   }
 }
-//dawaj token do maila
