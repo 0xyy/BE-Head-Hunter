@@ -71,14 +71,10 @@ export enum ExpectedContractType {
   UZUOD,
 }
 
-export type StudentResponse =
-  | {
-      isSuccess: false;
-    }
-  | {
-      userId: string;
-      isSuccess: true;
-    };
+export type StudentResponse = {
+  userId: string;
+  isSuccess: true;
+};
 export type ActiveStudentsResponse =
   | {
       isSuccess: true;
