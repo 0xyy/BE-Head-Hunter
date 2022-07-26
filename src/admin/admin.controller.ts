@@ -35,7 +35,7 @@ export class AdminController {
   //add new hr
   @Post(`/addHr`)
   addHRUser(@Body() body: CreateHrDto): Promise<CreateHrResponse> {
-    return this.hrService.createHr(body);
+    return this.adminService.createHr(body);
   }
 
   @Patch(`/edit`)

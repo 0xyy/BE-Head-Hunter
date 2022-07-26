@@ -4,6 +4,8 @@ import { AdminStudentService } from '../student/admin-student.service';
 import { AuthService } from '../auth/auth.service';
 import { MailService } from '../mail/mail.service';
 import { isGithubUrl } from 'is-github-url';
+import { CreateHrDto } from '../hr/dto/create-hr.dto';
+import { HrService } from '../hr/hr.service';
 
 @Injectable()
 export class AdminService {
@@ -12,6 +14,7 @@ export class AdminService {
     private adminStudentService: AdminStudentService,
     @Inject(AuthService) private authService: AuthService,
     @Inject(MailService) private mailService: MailService,
+    @Inject(HrService) private hrService: HrService,
   ) {}
 
   async CreateUsersFromFile(jsonfile: any) {
@@ -103,6 +106,7 @@ export class AdminService {
         const response = await this.adminStudentService.insertStudent(user);
         console.log(response, 'res');
         if (response.isSuccess) {
+          //token do maila
           const token = await this.authService.generateToken(response.userId);
           console.log(user.email, user);
           await this.mailService.sendMail(
@@ -119,4 +123,14 @@ export class AdminService {
 
     return failedUsersToInsert;
   }
+
+  createHr(body: CreateHrDto) {
+    //zwroc cos
+    this.hrService.createHr(body);
+
+    //if yes send email i token
+
+    return;
+  }
 }
+//dawaj token do maila
