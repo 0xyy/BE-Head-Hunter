@@ -16,8 +16,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
       jwtFromRequest: cookieExtractor,
-      secretOrKey:
-        'jnd9has9d0as 0asd0 9s09 09)()( Q)(#)(#@)(@()!@)(@!)( @)(()@*)(@*!() xzciofjiasn oa dnaslkdnalsdasdsadas @(@()$($ xfbuwujnjsjn jjewdejje chjuij',
+      secretOrKey: process.env.JWT_KEY,
     });
   }
 

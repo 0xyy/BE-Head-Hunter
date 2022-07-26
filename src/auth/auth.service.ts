@@ -3,9 +3,9 @@ import { Response } from 'express';
 import { JwtPayload } from './jwt.strategy';
 import { sign } from 'jsonwebtoken';
 import { v4 as uuid } from 'uuid';
-import { AuthLoginDto } from './dto/auth-login.dto';
 import { User } from '../user/user.entity';
 import { hashPwd } from '../utils/hash-pwd';
+import { AuthLoginRequest } from '../types';
 
 @Injectable()
 export class AuthService {
@@ -15,11 +15,7 @@ export class AuthService {
   } {
     const payload: JwtPayload = { id: currentTokenId };
     const expiresIn = 60 * 60 * 24;
-    const accessToken = sign(
-      payload,
-      'jda89dj98023u0 0u0 ))@)(#*)#*)@#*)(* )) u89dsijzhco 013- sdfdfmsdfsd,f,sf, ) @#)*)#*)#)(*#)(#)(#)(#)(# @!!!!!',
-      { expiresIn },
-    );
+    const accessToken = sign(payload, process.env.JWT_KEY, { expiresIn });
 
     return {
       accessToken,
@@ -46,7 +42,7 @@ export class AuthService {
     return token;
   }
 
-  async login(req: AuthLoginDto, res: Response): Promise<any> {
+  async login(req: AuthLoginRequest, res: Response) {
     try {
       const userByEmail = await User.findOne({
         where: {
@@ -76,7 +72,11 @@ export class AuthService {
           domain: 'localhost',
           httpOnly: true,
         })
-        .json({ ok: true });
+        .json({
+          isSuccess: true,
+          email: user.email,
+          userId: user.id,
+        });
     } catch (e) {
       return res.json({ error: e.message });
     }
