@@ -15,6 +15,8 @@ import { UserService } from '../user/user.service';
 import { HrService } from '../hr/hr.service';
 import { AdminService } from './admin.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { CreateHrDto } from '../hr/dto/create-hr.dto';
+import { CreateHrResponse } from '../types/hr';
 
 @Controller('admin')
 export class AdminController {
@@ -27,17 +29,13 @@ export class AdminController {
   //import all coursant from file
   @Post(`/createUsersFromFile`)
   @UseInterceptors(FileInterceptor('file'))
-  importUsersFromJSONFile(
-    @UploadedFile() file,
-    @Body() body,
-  ): Promise<Boolean> {
+  importUsersFromJSONFile(@UploadedFile() file, @Body() body): Promise<{}> {
     return this.adminService.CreateUsersFromFile(file);
   }
   //add new hr
   @Post(`/addHr`)
-  addHRUser() {
-    // @Body(), HR DTO
-    // return this.hrService.createHRUser(data)
+  addHRUser(@Body() body: CreateHrDto): Promise<CreateHrResponse> {
+    return this.hrService.createHr(body);
   }
 
   @Patch(`/edit`)
