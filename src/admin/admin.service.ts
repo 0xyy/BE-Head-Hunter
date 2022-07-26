@@ -4,7 +4,6 @@ import { AdminStudentService } from '../student/admin-student.service';
 import { AuthService } from '../auth/auth.service';
 import { MailService } from '../mail/mail.service';
 import { isGithubUrl } from 'is-github-url';
-import { User } from '../user/user.entity';
 
 @Injectable()
 export class AdminService {
@@ -20,26 +19,30 @@ export class AdminService {
     // if typ pliku
     // if czy to json
 
-    const failedUsersToInsert = [];
+    const failedUsersToInsert = {};
+    let userNumber = 0;
 
     const userData = JSON.parse(
       jsonfile.buffer.toString(),
     ) as InsertStudentDto[];
 
     for await (const user of userData) {
-      //VALIDACJA
+      userNumber++;
+      const validationErrors = [];
+
       if (!user.email.includes('@') || typeof user.email !== 'string') {
-        return { isSuccess: false };
+        validationErrors.push('email nie jest poprawny');
       }
 
-      // validuj od 0 do 5
       if (
         !user.projectDegree ||
         typeof user.projectDegree !== 'number' ||
         user.projectDegree > 5 ||
         user.projectDegree < 0
       ) {
-        return { isSuccess: false };
+        validationErrors.push(
+          'projectDegree nie jest liczba, albo jest większy od 5 lub mniejszy niz 0',
+        );
       }
 
       if (
@@ -48,7 +51,9 @@ export class AdminService {
         user.courseEngagment > 5 ||
         user.courseEngagment < 0
       ) {
-        return { isSuccess: false };
+        validationErrors.push(
+          'courseEngagment nie jest liczba, albo jest większy od 5 lub mniejszy niz 0',
+        );
       }
 
       if (
@@ -57,7 +62,9 @@ export class AdminService {
         user.courseCompletion > 5 ||
         user.courseCompletion < 0
       ) {
-        return { isSuccess: false };
+        validationErrors.push(
+          'courseCompletion nie jest liczba, albo jest większy od 5 lub mniejszy niz 0',
+        );
       }
 
       if (
@@ -66,7 +73,9 @@ export class AdminService {
         user.teamProjectDegree > 5 ||
         user.teamProjectDegree < 0
       ) {
-        return { isSuccess: false };
+        validationErrors.push(
+          'teamProjectDegree nie jest liczba, albo jest większy od 5 lub mniejszy niz 0',
+        );
       }
 
       if (
@@ -74,26 +83,27 @@ export class AdminService {
         !Array.isArray(user.bonusProjectUrls) ||
         user.bonusProjectUrls.length <= 0
       ) {
-        user.bonusProjectUrls.forEach((project) => {
-          const isValid = isGithubUrl(project);
-          if (!isValid) {
-            return { isSuccess: false };
-          }
-        });
-
-        return { isSuccess: false };
+        validationErrors.push('bonusProjectUrls nie istnieje');
       }
 
-      //w try catch i dodaj do tablicy
+      for (const projectUrl of user.bonusProjectUrls) {
+        const isValid = isGithubUrl(projectUrl);
+        if (!isValid) {
+          validationErrors.push('bonusProjectUrls nie jest poprawny');
+          continue;
+        }
+      }
+
+      if (validationErrors.length > 0) {
+        failedUsersToInsert[userNumber] = { user, errors: validationErrors };
+        continue;
+      }
+
       try {
         const response = await this.adminStudentService.insertStudent(user);
         console.log(response, 'res');
         if (response.isSuccess) {
-          // response.userId;
-
-          //generate token ma byc public
-
-          // const token = await this.authService.generateToken(response.userId);
+          const token = await this.authService.generateToken(response.userId);
           console.log(user.email, user);
           await this.mailService.sendMail(
             user.email,
@@ -102,7 +112,8 @@ export class AdminService {
           );
         }
       } catch (e) {
-        failedUsersToInsert.push(user);
+        validationErrors.push(e.message);
+        failedUsersToInsert[userNumber] = { user, errors: validationErrors };
       }
     }
 
