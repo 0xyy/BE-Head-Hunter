@@ -2,11 +2,14 @@ import {
   BaseEntity,
   Column,
   Entity,
+  JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { StudentProjectUrlInterface } from '../../types';
+import { StudentProjectUrlInterface, UserInterface } from '../../types';
 import { StudentInfo } from '../../student/entities/student-info.entity';
+import { User } from '../../user/user.entity';
 
 @Entity()
 export class Hr extends BaseEntity {
@@ -44,6 +47,12 @@ export class Hr extends BaseEntity {
 
   @OneToMany((type) => StudentInfo, (entity) => entity.hr)
   studentsToInterview: StudentProjectUrlInterface[];
+
+  @OneToOne((type) => User, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  user: UserInterface;
 
   // @AfterRemove()
   // zmiana statusu rezerwacji usera
