@@ -29,6 +29,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       where: {
         currentTokenId: payload.id,
       },
+      relations: [
+        'studentInfo',
+        'studentInfo.bonusProjectUrls',
+        'studentInfo.portfolioUrls',
+        'studentInfo.projectUrls',
+        'hr',
+        'hr.studentsToInterview',
+      ],
     });
 
     if (!user) {
