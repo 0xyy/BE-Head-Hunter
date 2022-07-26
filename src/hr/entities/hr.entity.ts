@@ -20,14 +20,6 @@ export class Hr extends BaseEntity {
     type: 'varchar',
     length: 255,
     nullable: false,
-    unique: true,
-  })
-  email: string;
-
-  @Column({
-    type: 'varchar',
-    length: 255,
-    nullable: false,
   })
   fullName: string;
 
