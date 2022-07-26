@@ -23,10 +23,12 @@ export class AdminService {
 
     //czy user z danym email istnieje
     for await (const user of userData) {
+      //VALIDACJA
       if (!user.email.includes('@') || typeof user.email !== 'string') {
         return { isSuccess: false };
       }
 
+      // validuj od 0 do 5
       if (!user.projectDegree || typeof user.projectDegree !== 'number') {
         return { isSuccess: false };
       }
@@ -51,7 +53,11 @@ export class AdminService {
         return { isSuccess: false };
       }
 
+      //is existing
+
+      //w try catch i dodaj do tablicy
       const response = await this.adminStudentService.insertStudent(user);
+
       console.log(response, 'res');
       if (response.isSuccess) {
         // response.userId;
