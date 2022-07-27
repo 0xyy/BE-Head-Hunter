@@ -51,17 +51,18 @@ export class AuthService {
       });
 
       if (!userByEmail) {
-        return res.json({ error: 'Invalid login data!' });
+        return res.json({ error: 'Niepoprawne dane logowania!' });
       }
 
       const user = await User.findOne({
         where: {
           pwdHash: hashPwd(req.pwd, userByEmail.salz),
         },
+        relations: ['studentInfo'],
       });
 
       if (!user) {
-        return res.json({ error: 'Invalid login data!' });
+        return res.json({ error: 'Niepoprawne dane logowania!' });
       }
 
       const token = await this.createToken(await this.generateToken(user));
@@ -76,6 +77,8 @@ export class AuthService {
           isSuccess: true,
           email: user.email,
           userId: user.id,
+          userRole: user.role,
+          avatarUrl: user.studentInfo?.avatarUrl || null,
         });
     } catch (e) {
       return res.json({ error: e.message });
@@ -95,7 +98,10 @@ export class AuthService {
 
       return res.json({ ok: true });
     } catch (e) {
-      return res.json({ error: e.message });
+      return res.json({
+        isSuccess: false,
+        error: e.message,
+      });
     }
   }
 }
