@@ -9,7 +9,7 @@ import { AuthLoginRequest } from '../types';
 
 @Injectable()
 export class AuthService {
-  private createToken(currentTokenId: string): {
+  public createToken(currentTokenId: string): {
     accessToken: string;
     expiresIn: number;
   } {

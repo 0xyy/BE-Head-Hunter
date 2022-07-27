@@ -20,8 +20,8 @@ export class AdminService {
 
   async CreateUsersFromFile(jsonfile: any) {
     console.log(jsonfile);
-    // if typ pliku
-    // if czy to json
+
+    //TODO CHECK IF JSON
 
     const failedUsersToInsert = {};
     let userNumber = 0;
