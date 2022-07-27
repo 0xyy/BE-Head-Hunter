@@ -8,13 +8,13 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import {
+  ActivateUserRequest,
   ActivateUserResponse,
   EditPasswordRequest,
   EditPasswordResponse,
   RecoverPasswordRequest,
   RecoverPasswordResponse,
 } from '../types';
-import { ActivateUserDto } from './dto/activate-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { UserObj } from '../decorators/user-obj.decorator';
 import { User } from './user.entity';
@@ -23,7 +23,9 @@ import { User } from './user.entity';
 export class UserController {
   constructor(@Inject(UserService) private userService: UserService) {}
   @Patch(`/activate`)
-  activeUser(@Body() active: ActivateUserDto): Promise<ActivateUserResponse> {
+  activeUser(
+    @Body() active: ActivateUserRequest,
+  ): Promise<ActivateUserResponse> {
     return this.userService.activate(active);
   }
 
