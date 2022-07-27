@@ -1,15 +1,18 @@
 import { ActivateUserDto } from '../../user/dto/activate-user.dto';
 import { EditPasswordDto } from '../../user/dto/edit-password.dto';
 import { RecoverPasswordDto } from '../../user/dto/recover-password.dto';
+import { StudentInfoInterface } from '../student';
 
 export interface UserInterface {
   id: string;
   email: string;
   pwdHash: string;
+  salz: string;
   currentTokenId: string | null;
   activeTokenId: string | null;
   active: boolean;
   role: UserRole;
+  studentInfo: StudentInfoInterface;
 }
 
 export type EditPasswordResponse = {

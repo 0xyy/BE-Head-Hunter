@@ -11,12 +11,7 @@ import { randomPassword } from '../utils/random-password';
 @Injectable()
 export class UserService {
   constructor(@Inject(MailService) private mailService: MailService) {}
-  async editPassword(password: EditPasswordDto) {
-    const user = await User.findOne({
-      where: {
-        id: password.userId,
-      },
-    });
+  async editPassword(password: EditPasswordDto, user: User) {
     if (!user || user.pwdHash !== hashPwd(password.pwd, user.salz)) {
       return {
         isSuccess: false,
@@ -43,7 +38,7 @@ export class UserService {
     const password = randomPassword();
     user.pwdHash = hashPwd(password, user.salz);
 
-    this.mailService.sendMail(
+    await this.mailService.sendMail(
       recover.email,
       'odzyskiwanie konta Megak Head-Hunter',
       `<p>Twoje nowe hasło to:${password}</p>`,
