@@ -1,16 +1,11 @@
 import {
   Body,
   Controller,
-  Get,
   Inject,
-  Patch,
   Post,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { RecoverPasswordDto } from './dto/recoverPasswordDto';
-import { EditPasswordDto } from './dto/editPasswordDto';
-import { EditPasswordResponse, RecoverPasswordResponse } from '../types';
 import { UserService } from '../user/user.service';
 import { HrService } from '../hr/hr.service';
 import { AdminService } from './admin.service';
@@ -36,19 +31,5 @@ export class AdminController {
   @Post(`/addHr`)
   addHRUser(@Body() body: CreateHrDto): Promise<CreateHrResponse> {
     return this.adminService.createHr(body);
-  }
-
-  @Patch(`/edit`)
-  editPassword(
-    @Body() password: EditPasswordDto,
-  ): Promise<EditPasswordResponse> {
-    return this.userService.editPassword(password);
-  }
-
-  @Get(`/recover`)
-  recoverPassword(
-    @Body() recover: RecoverPasswordDto,
-  ): Promise<RecoverPasswordResponse> {
-    return this.userService.recover(recover);
   }
 }
