@@ -2,6 +2,7 @@ import { ActivateUserDto } from '../../user/dto/activate-user.dto';
 import { EditPasswordDto } from '../../user/dto/edit-password.dto';
 import { RecoverPasswordDto } from '../../user/dto/recover-password.dto';
 import { StudentInfoInterface } from '../student';
+import { HrInterface } from '../hr';
 
 export interface UserInterface {
   id: string;
@@ -13,6 +14,7 @@ export interface UserInterface {
   active: boolean;
   role: UserRole;
   studentInfo: StudentInfoInterface;
+  hr: HrInterface;
 }
 
 export type EditPasswordResponse = {

@@ -12,7 +12,7 @@ import { randomPassword } from '../utils/random-password';
 export class UserService {
   constructor(@Inject(MailService) private mailService: MailService) {}
   async editPassword(password: EditPasswordDto, user: User) {
-    if (!user || user.pwdHash !== hashPwd(password.pwd, user.salz)) {
+    if (user.pwdHash !== hashPwd(password.pwd, user.salz)) {
       return {
         isSuccess: false,
       };
@@ -55,6 +55,7 @@ export class UserService {
         id: userId,
       },
     });
+
     if (!user) {
       return {
         message: 'there is no such user.',
