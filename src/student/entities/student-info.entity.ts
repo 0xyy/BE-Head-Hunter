@@ -13,6 +13,7 @@ import { StudentProjectUrl } from './student-project-url.entity';
 import {
   ExpectedContractType,
   ExpectedTypeWork,
+  StudentBonusProjectUrlInterface,
   StudentInfoInterface,
   StudentPortfolioUrlInterface,
   StudentProjectUrlInterface,
@@ -21,11 +22,35 @@ import {
 } from '../../types';
 import { User } from '../../user/user.entity';
 import { Hr } from '../../hr/entities/hr.entity';
+import { StudentBonusProjectUrl } from './student-bonus-project-url.entity';
 
 @Entity()
 export class StudentInfo extends BaseEntity implements StudentInfoInterface {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+  @Column({
+    type: 'tinyint',
+  })
+  courseCompletion: number;
+
+  @Column({
+    type: 'tinyint',
+  })
+  courseEngagment: number;
+
+  @Column({
+    type: 'tinyint',
+  })
+  projectDegree: number;
+
+  @Column({
+    type: 'tinyint',
+  })
+  teamProjectDegree: number;
+
+  @OneToMany((type) => StudentBonusProjectUrl, (entity) => entity.studentInfo)
+  @JoinColumn()
+  bonusProjectUrls: StudentBonusProjectUrlInterface[];
   @Column({
     length: '15',
     nullable: true,
@@ -45,6 +70,8 @@ export class StudentInfo extends BaseEntity implements StudentInfoInterface {
   @Column({
     length: 255,
     unique: true,
+    default: null,
+    nullable: true,
   })
   githubUsername: string; //Należy sprawdzić za pomocą API GH lub innym sposobem, czy taka osoba istnieje.
 
