@@ -29,7 +29,7 @@ export class AdminController {
   }
   //add new hr
   @Post(`/addHr`)
-  addHRUser(@Body() body: CreateHrDto): Promise<CreateHrResponse> {
+  addHRUser(@Body() body: CreateHrDto): Promise<any> {
     return this.adminService.createHr(body);
   }
 }

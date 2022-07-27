@@ -6,6 +6,7 @@ import { MailService } from '../mail/mail.service';
 import { isGithubUrl } from 'is-github-url';
 import { CreateHrDto } from '../hr/dto/create-hr.dto';
 import { HrService } from '../hr/hr.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AdminService {
@@ -106,13 +107,12 @@ export class AdminService {
         const response = await this.adminStudentService.insertStudent(user);
         console.log(response, 'res');
         if (response.isSuccess) {
-          //token do maila
-          const token = await this.authService.generateToken(response.userId);
+          const token = this.authService.createToken(uuidv4());
           console.log(user.email, user);
           await this.mailService.sendMail(
             user.email,
             'rejestracja kldfjskldf',
-            'html do zrobienia',
+            `html do zrobienia ${token} `,
           );
         }
       } catch (e) {
@@ -127,11 +127,11 @@ export class AdminService {
   async createHr(body: CreateHrDto) {
     const res = await this.hrService.createHr(body);
     if (res.isSuccess) {
-      const token = await this.authService.generateToken(res.userId);
+      const token = await this.authService.createToken(uuidv4());
       await this.mailService.sendMail(
         body.email,
         'rejestracja kldfjskldf',
-        'html do zrobienia',
+        `html do zrobienia ${token} `,
       );
       return {
         isSuccess: true,
