@@ -15,5 +15,6 @@ export type CreateHrRequest = CreateHrDto;
 
 export type CreateHrResponse = {
   isSuccess: true;
+  userId: string;
   message: string;
 };
