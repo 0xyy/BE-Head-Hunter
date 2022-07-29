@@ -19,19 +19,14 @@ export class AdminService {
   ) {}
 
   async CreateUsersFromFile(jsonfile: any) {
-    console.log(jsonfile);
-
     //TODO CHECK IF JSON
-
-    const failedUsersToInsert = {};
-    let userNumber = 0;
+    const failedUsersToInsert = [];
 
     const userData = JSON.parse(
       jsonfile.buffer.toString(),
     ) as InsertStudentDto[];
 
     for await (const user of userData) {
-      userNumber++;
       const validationErrors = [];
 
       if (!user.email.includes('@') || typeof user.email !== 'string') {
@@ -99,25 +94,23 @@ export class AdminService {
       }
 
       if (validationErrors.length > 0) {
-        failedUsersToInsert[userNumber] = { user, errors: validationErrors };
+        failedUsersToInsert.push({ user, errors: validationErrors });
         continue;
       }
 
       try {
         const response = await this.adminStudentService.insertStudent(user);
-        console.log(response, 'res');
         if (response.isSuccess) {
           const token = this.authService.createToken(uuidv4());
-          console.log(user.email, user);
           await this.mailService.sendMail(
             user.email,
-            'rejestracja kldfjskldf',
-            `html do zrobienia ${token} `,
+            'rejestracja użytkownika',
+            `html do zrobienia ${process.env.ACTIVATE_LINK}/${response.userId}/${token}/ `,
           );
         }
       } catch (e) {
         validationErrors.push(e.message);
-        failedUsersToInsert[userNumber] = { user, errors: validationErrors };
+        failedUsersToInsert.push({ user, errors: validationErrors });
       }
     }
 
@@ -125,18 +118,24 @@ export class AdminService {
   }
 
   async createHr(body: CreateHrDto) {
-    const res = await this.hrService.createHr(body);
-    if (res.isSuccess) {
-      const token = await this.authService.createToken(uuidv4());
-      await this.mailService.sendMail(
-        body.email,
-        'rejestracja kldfjskldf',
-        `html do zrobienia ${token} `,
-      );
+    try {
+      const response = await this.hrService.createHr(body);
+      if (response.isSuccess) {
+        const token = this.authService.createToken(uuidv4());
+        await this.mailService.sendMail(
+          body.email,
+          'rejestracja użytkownika',
+          `html do zrobienia ${process.env.ACTIVATE_LINK}/${response.userId}/${token}/  `,
+        );
+      }
       return {
         isSuccess: true,
       };
+    } catch (e) {
+      return {
+        isSuccess: false,
+        message: e.message,
+      };
     }
-    return;
   }
 }
