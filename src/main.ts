@@ -10,6 +10,9 @@ import { GlobalExceptionFilter } from './filters/global-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.enableCors();
+
   app.useGlobalPipes(
     new ValidationPipe({
       disableErrorMessages: true,
@@ -24,6 +27,6 @@ async function bootstrap() {
   app.useGlobalFilters(new GlobalExceptionFilter());
   app.use(cookieParser());
 
-  await app.listen(3000);
+  await app.listen(3001);
 }
 bootstrap();
