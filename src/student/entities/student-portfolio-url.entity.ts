@@ -1,4 +1,7 @@
-import { StudentInfoInterface, StudentPortfolioUrlInterface } from 'src/types';
+import {
+  StudentInfoInterface,
+  StudentPortfolioUrlInterface,
+} from '../../types';
 import {
   BaseEntity,
   Column,

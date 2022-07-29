@@ -2,9 +2,9 @@ import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
-import { AuthLoginDto } from './dto/auth-login.dto';
 import { User } from '../user/user.entity';
 import { UserObj } from '../decorators/user-obj.decorator';
+import { AuthLoginRequest } from '../types';
 
 @Controller('auth')
 export class AuthController {
@@ -12,7 +12,7 @@ export class AuthController {
 
   @Post('/login')
   async userLogin(
-    @Body() req: AuthLoginDto,
+    @Body() req: AuthLoginRequest,
     @Res() res: Response,
   ): Promise<any> {
     return this.authService.login(req, res);

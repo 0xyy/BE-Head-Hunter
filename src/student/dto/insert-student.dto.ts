@@ -8,6 +8,7 @@ import {
 } from 'class-validator';
 
 export class InsertStudentDto {
+  @IsNotEmpty()
   @IsEmail()
   email: string;
   @Min(0)
