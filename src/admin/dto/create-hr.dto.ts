@@ -3,9 +3,6 @@ import { IsInt, IsNotEmpty, IsString, Max, Min } from 'class-validator';
 export class CreateHrDto {
   @IsNotEmpty()
   @IsString()
-  token: string;
-  @IsNotEmpty()
-  @IsString()
   email: string;
 
   @IsNotEmpty()
@@ -18,7 +15,7 @@ export class CreateHrDto {
 
   @IsNotEmpty()
   @IsInt()
-  @Min(0)
+  @Min(1)
   @Max(999)
   maxReservedStudents: number;
 }

@@ -1,6 +1,5 @@
 import { StudentProjectUrlInterface } from '../student';
 import { UserInterface } from '../user';
-import { CreateHrDto } from '../../hr/dto/create-hr.dto';
 
 export interface HrInterface {
   id: string;
@@ -11,9 +10,15 @@ export interface HrInterface {
   user: UserInterface;
 }
 
-export type CreateHrRequest = CreateHrDto;
+export type AdminInsertHr = {
+  token: string;
+  email: string;
+  fullName: string;
+  company: string;
+  maxReservedStudents: number;
+};
 
-export type CreateHrResponse = {
+export type AdminCreateHrResponse = {
   isSuccess: true;
   userId: string;
   message: string;
