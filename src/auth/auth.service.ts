@@ -51,7 +51,10 @@ export class AuthService {
       });
 
       if (!userByEmail) {
-        return res.json({ error: 'Niepoprawne dane logowania!' });
+        return res.json({
+          isSuccess: false,
+          message: 'Niepoprawne dane logowania!',
+        });
       }
 
       const user = await User.findOne({
@@ -62,7 +65,10 @@ export class AuthService {
       });
 
       if (!user) {
-        return res.json({ error: 'Niepoprawne dane logowania!' });
+        return res.json({
+          isSuccess: false,
+          message: 'Niepoprawne dane logowania!',
+        });
       }
 
       const token = await this.createToken(await this.generateToken(user));
@@ -81,7 +87,10 @@ export class AuthService {
           avatarUrl: user.studentInfo?.avatarUrl || null,
         });
     } catch (e) {
-      return res.json({ error: e.message });
+      return res.json({
+        isSuccess: false,
+        message: e.message,
+      });
     }
   }
 
