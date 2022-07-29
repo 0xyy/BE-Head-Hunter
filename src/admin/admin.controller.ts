@@ -11,8 +11,8 @@ import { UserService } from '../user/user.service';
 import { HrService } from '../hr/hr.service';
 import { AdminService } from './admin.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CreateHrDto } from '../hr/dto/create-hr.dto';
-import { UserRole } from '../types';
+import { CreateHrDto } from './dto/create-hr.dto';
+import { CreateHrResponse, InsertStudentResponse, UserRole } from '../types';
 import { Roles } from '../decorators/roles.decorator';
 import { RolesGuard } from '../guards/roles.guard';
 import { AuthGuard } from '@nestjs/passport';
@@ -26,11 +26,14 @@ export class AdminController {
   ) {}
 
   //import all coursant from file
-  @Roles(UserRole.ADMIN)
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  // @Roles(UserRole.ADMIN)
+  // @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post(`/createUsersFromFile`)
   @UseInterceptors(FileInterceptor('file'))
-  importUsersFromJSONFile(@UploadedFile() file, @Body() body): Promise<{}> {
+  importUsersFromJSONFile(
+    @UploadedFile() file,
+    @Body() body,
+  ): Promise<InsertStudentResponse> {
     return this.adminService.CreateUsersFromFile(file);
   }
 
@@ -38,7 +41,7 @@ export class AdminController {
   @Roles(UserRole.ADMIN)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post(`/addHr`)
-  addHRUser(@Body() body: CreateHrDto): Promise<any> {
+  addHRUser(@Body() body: CreateHrDto): Promise<CreateHrResponse> {
     return this.adminService.createHr(body);
   }
 }

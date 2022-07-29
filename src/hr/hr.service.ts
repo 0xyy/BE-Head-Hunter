@@ -1,9 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateHrDto } from './dto/create-hr.dto';
 import { Hr } from './entities/hr.entity';
 import { User } from '../user/user.entity';
-import { UserRole } from '../types';
-import { CreateHrResponse } from '../types';
+import { AdminInsertHr, UserRole } from '../types';
+import { AdminCreateHrResponse } from '../types';
 
 @Injectable()
 export class HrService {
@@ -15,7 +14,7 @@ export class HrService {
     return;
   }
 
-  async createHr(hr: CreateHrDto): Promise<CreateHrResponse> {
+  async createHr(hr: AdminInsertHr): Promise<AdminCreateHrResponse> {
     const checkUser = await User.findOne({ where: { email: hr.email } });
     if (checkUser) {
       throw new HttpException(

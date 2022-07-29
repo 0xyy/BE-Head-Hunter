@@ -9,9 +9,15 @@ export type CreateHrResponse =
 
 export type InsertStudentResponse =
   | {
+      countSuccess: number;
       isSuccess: true;
     }
   | {
-      user: UserInterface;
-      errors: string[];
-    }[];
+      isSuccess: false;
+      users: {
+        user: UserInterface;
+        errors: string[];
+      }[];
+      countSuccess: number;
+      countFailed: number;
+    };
