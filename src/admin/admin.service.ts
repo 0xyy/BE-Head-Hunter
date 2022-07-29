@@ -3,10 +3,10 @@ import { InsertStudentDto } from 'src/student/dto/insert-student.dto';
 import { AdminStudentService } from '../student/admin-student.service';
 import { AuthService } from '../auth/auth.service';
 import { MailService } from '../mail/mail.service';
-import { isGithubUrl } from 'is-github-url';
-import { CreateHrDto } from '../hr/dto/create-hr.dto';
+import { CreateHrDto } from './dto/create-hr.dto';
 import { HrService } from '../hr/hr.service';
 import { v4 as uuidv4 } from 'uuid';
+import { CreateHrResponse, InsertStudentResponse } from '../types';
 
 @Injectable()
 export class AdminService {
@@ -18,13 +18,13 @@ export class AdminService {
     @Inject(HrService) private hrService: HrService,
   ) {}
 
-  async CreateUsersFromFile(jsonfile: any) {
+  async CreateUsersFromFile(jsonfile: any): Promise<InsertStudentResponse> {
     //TODO CHECK IF JSON
     const failedUsersToInsert = [];
-
     const userData = JSON.parse(
       jsonfile.buffer.toString(),
     ) as InsertStudentDto[];
+    const countUser = userData.length;
 
     for await (const user of userData) {
       const validationErrors = [];
@@ -86,7 +86,8 @@ export class AdminService {
       }
 
       for (const projectUrl of user.bonusProjectUrls) {
-        const isValid = isGithubUrl(projectUrl);
+        const isValid = projectUrl.includes('github');
+        console.log(isValid);
         if (!isValid) {
           validationErrors.push('bonusProjectUrls nie jest poprawny');
           continue;
@@ -113,19 +114,32 @@ export class AdminService {
         failedUsersToInsert.push({ user, errors: validationErrors });
       }
     }
-
-    return failedUsersToInsert;
+    if (failedUsersToInsert.length === 0) {
+      return {
+        countSuccess: countUser,
+        isSuccess: true,
+      };
+    } else
+      return {
+        isSuccess: false,
+        countSuccess: countUser - failedUsersToInsert.length,
+        countFailed: failedUsersToInsert.length,
+        users: failedUsersToInsert,
+      };
   }
 
-  async createHr(body: CreateHrDto) {
+  async createHr(body: CreateHrDto): Promise<CreateHrResponse> {
+    const token = this.authService.createToken(uuidv4());
     try {
-      const response = await this.hrService.createHr(body);
+      const response = await this.hrService.createHr({
+        ...body,
+        token: token.accessToken,
+      });
       if (response.isSuccess) {
-        const token = this.authService.createToken(uuidv4());
         await this.mailService.sendMail(
           body.email,
           'rejestracja użytkownika',
-          `html do zrobienia ${process.env.ACTIVATE_LINK}/${response.userId}/${token}/  `,
+          `html do zrobienia ${process.env.ACTIVATE_LINK}/${response.userId}/${token.accessToken}/  `,
         );
       }
       return {
