@@ -3,7 +3,7 @@ import { CreateHrDto } from './dto/create-hr.dto';
 import { Hr } from './entities/hr.entity';
 import { User } from '../user/user.entity';
 import { UserRole } from '../types';
-import { CreateHrResponse } from '../types/hr';
+import { CreateHrResponse } from '../types';
 
 @Injectable()
 export class HrService {
@@ -51,6 +51,7 @@ export class HrService {
     }
     return {
       isSuccess: true,
+      userId: user.id,
       message: `Dodanie Hr-a "${hr.email}" do bazy powiodło się`,
     };
   }
