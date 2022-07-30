@@ -25,19 +25,17 @@ export class AdminController {
         @Inject(AdminService) private adminService: AdminService,
     ) {}
 
-    //import all coursant from file
-    // @Roles(UserRole.ADMIN)
-    // @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles(UserRole.ADMIN)
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Post(`/createUsersFromFile`)
     @UseInterceptors(FileInterceptor('file'))
     importUsersFromJSONFile(
         @UploadedFile() file,
         @Body() body,
     ): Promise<InsertStudentResponse> {
-        return this.adminService.CreateUsersFromFile(file);
+        return this.adminService.createUsersFromFile(file);
     }
 
-    //add new hr
     @Roles(UserRole.ADMIN)
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Post(`/addHr`)

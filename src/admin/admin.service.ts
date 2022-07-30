@@ -18,7 +18,7 @@ export class AdminService {
     ) {
     }
 
-    async CreateUsersFromFile(jsonfile: any): Promise<InsertStudentResponse> {
+    async createUsersFromFile(jsonfile: any): Promise<InsertStudentResponse> {
         //TODO CHECK IF JSON
         const failedUsersToInsert = [];
         const userData = JSON.parse(
