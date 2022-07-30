@@ -124,12 +124,20 @@ export class AuthService {
   }
 
   async autoLogin(user: User, res: Response) {
-    return res.json({
-      isSuccess: true,
-      userFullName: this.getUserFullName(user),
-      userId: user.id,
-      userRole: user.role,
-      avatarUrl: user.studentInfo?.avatarUrl || null,
-    });
+    const token = this.createToken(await this.generateToken(user));
+
+    return res
+      .cookie('jwt', token.accessToken, {
+        secure: false,
+        domain: 'localhost',
+        httpOnly: true,
+      })
+      .json({
+        isSuccess: true,
+        userFullName: this.getUserFullName(user),
+        userId: user.id,
+        userRole: user.role,
+        avatarUrl: user.studentInfo?.avatarUrl || null,
+      });
   }
 }
