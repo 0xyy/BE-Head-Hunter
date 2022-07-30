@@ -5,7 +5,7 @@ import { sign } from 'jsonwebtoken';
 import { v4 as uuid } from 'uuid';
 import { User } from '../user/user.entity';
 import { hashPwd } from '../utils/hash-pwd';
-import { AuthLoginRequest } from '../types';
+import { AuthLoginRequest, UserRole } from '../types';
 
 @Injectable()
 export class AuthService {
@@ -61,7 +61,7 @@ export class AuthService {
         where: {
           pwdHash: hashPwd(req.pwd, userByEmail.salz),
         },
-        relations: ['studentInfo'],
+        relations: ['studentInfo', 'hr'],
       });
 
       if (!user) {
@@ -70,7 +70,12 @@ export class AuthService {
           message: 'Niepoprawne dane logowania!',
         });
       }
-
+      let userFullName = 'ADMIN';
+      if (user.role === UserRole.STUDENT) {
+        userFullName = user.studentInfo.firstName + user.studentInfo.lastName;
+      } else if (user.role === UserRole.HR) {
+        userFullName = user.hr.fullName;
+      }
       const token = await this.createToken(await this.generateToken(user));
 
       return res
@@ -81,7 +86,7 @@ export class AuthService {
         })
         .json({
           isSuccess: true,
-          email: user.email,
+          userFullName: userFullName,
           userId: user.id,
           userRole: user.role,
           avatarUrl: user.studentInfo?.avatarUrl || null,
