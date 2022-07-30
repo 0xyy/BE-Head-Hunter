@@ -51,25 +51,13 @@ export class AuthService {
       return 'ADMIN';
     }
   };
+  private checkActiveUser = (user: User) => user.active === true;
 
   async login(req: AuthLoginRequest, res: Response) {
     try {
-      const userByEmail = await User.findOne({
-        where: {
-          email: req.email,
-        },
-      });
-
-      if (!userByEmail) {
-        return res.json({
-          isSuccess: false,
-          message: 'Niepoprawne dane logowania!',
-        });
-      }
-
       const user = await User.findOne({
         where: {
-          pwdHash: hashPwd(req.pwd, userByEmail.salz),
+          email: req.email,
         },
         relations: ['studentInfo', 'hr'],
       });
@@ -78,6 +66,20 @@ export class AuthService {
         return res.json({
           isSuccess: false,
           message: 'Niepoprawne dane logowania!',
+        });
+      }
+      const password = hashPwd(req.pwd, user.salz);
+      if (user.pwdHash !== password) {
+        return res.json({
+          isSuccess: false,
+          message: 'Niepoprawne dane logowania!',
+        });
+      }
+
+      if (!this.checkActiveUser(user)) {
+        return res.json({
+          isSuccess: false,
+          message: 'Użytkownik jest nieaktywny!',
         });
       }
       const token = this.createToken(await this.generateToken(user));
@@ -124,6 +126,12 @@ export class AuthService {
   }
 
   async autoLogin(user: User, res: Response) {
+    if (!this.checkActiveUser(user)) {
+      return res.json({
+        isSuccess: false,
+        message: 'Użytkownik jest nieaktywny!',
+      });
+    }
     const token = this.createToken(await this.generateToken(user));
 
     return res
