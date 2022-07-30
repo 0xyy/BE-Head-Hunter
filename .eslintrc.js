@@ -18,6 +18,8 @@ module.exports = {
   rules: {
     "indent": ["error", 4],
     "quotes": [2, "single", "avoid-escape"],
+    "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 0 }],
+    "@typescript-eslint/object-curly-spacing": ["error", 'always'],
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
