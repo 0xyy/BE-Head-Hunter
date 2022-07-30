@@ -72,7 +72,7 @@ export class AuthService {
       }
       let userFullName = 'ADMIN';
       if (user.role === UserRole.STUDENT) {
-        userFullName = user.studentInfo.firstName + user.studentInfo.lastName;
+        userFullName = user.studentInfo?.firstName + user.studentInfo?.lastName;
       } else if (user.role === UserRole.HR) {
         userFullName = user.hr.fullName;
       }
