@@ -23,4 +23,9 @@ export class AuthController {
   async logout(@UserObj() user: User, @Res() res: Response): Promise<any> {
     return this.authService.logout(user, res);
   }
+  @Get('/auto-login')
+  @UseGuards(AuthGuard('jwt'))
+  async autoLogin(@UserObj() user: User, @Res() res: Response): Promise<any> {
+    return this.authService.autoLogin(user, res);
+  }
 }

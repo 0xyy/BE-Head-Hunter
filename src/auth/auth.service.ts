@@ -42,6 +42,16 @@ export class AuthService {
     return token;
   }
 
+  private getUserFullName = (user: User) => {
+    if (user.role === UserRole.STUDENT) {
+      return user.studentInfo?.firstName + user.studentInfo?.lastName;
+    } else if (user.role === UserRole.HR) {
+      return user.hr.fullName;
+    } else {
+      return 'ADMIN';
+    }
+  };
+
   async login(req: AuthLoginRequest, res: Response) {
     try {
       const userByEmail = await User.findOne({
@@ -70,13 +80,7 @@ export class AuthService {
           message: 'Niepoprawne dane logowania!',
         });
       }
-      let userFullName = 'ADMIN';
-      if (user.role === UserRole.STUDENT) {
-        userFullName = user.studentInfo?.firstName + user.studentInfo?.lastName;
-      } else if (user.role === UserRole.HR) {
-        userFullName = user.hr.fullName;
-      }
-      const token = await this.createToken(await this.generateToken(user));
+      const token = this.createToken(await this.generateToken(user));
 
       return res
         .cookie('jwt', token.accessToken, {
@@ -86,7 +90,7 @@ export class AuthService {
         })
         .json({
           isSuccess: true,
-          userFullName: userFullName,
+          userFullName: this.getUserFullName(user),
           userId: user.id,
           userRole: user.role,
           avatarUrl: user.studentInfo?.avatarUrl || null,
@@ -117,5 +121,15 @@ export class AuthService {
         error: e.message,
       });
     }
+  }
+
+  async autoLogin(user: User, res: Response) {
+    return res.json({
+      isSuccess: true,
+      userFullName: this.getUserFullName(user),
+      userId: user.id,
+      userRole: user.role,
+      avatarUrl: user.studentInfo?.avatarUrl || null,
+    });
   }
 }
