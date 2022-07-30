@@ -14,9 +14,8 @@ export class AdminService {
         @Inject(AdminStudentService) private adminStudentService: AdminStudentService,
         @Inject(AuthService) private authService: AuthService,
         @Inject(MailService) private mailService: MailService,
-        @Inject(HrService) private hrService: HrService
-    ) {
-    }
+        @Inject(HrService) private hrService: HrService,
+    ) {}
 
     async createUsersFromFile(jsonfile: any): Promise<InsertStudentResponse> {
         //TODO CHECK IF JSON
