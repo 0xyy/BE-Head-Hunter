@@ -44,6 +44,7 @@ export class UserService {
     }
     const password = randomPassword();
     user.pwdHash = hashPwd(password, user.salz);
+    await user.save();
 
     await this.mailService.sendMail(
       recover.email,
