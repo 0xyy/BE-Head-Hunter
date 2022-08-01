@@ -16,8 +16,8 @@ module.exports = {
   },
   ignorePatterns: ['.eslintrc.js'],
   rules: {
-    "indent": ["error", 4],
     "quotes": [2, "single", "avoid-escape"],
+    "indent": ["error", 4, { "SwitchCase": 1, "ignoredNodes": ["PropertyDefinition"] }],
     "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 0 }],
     "@typescript-eslint/object-curly-spacing": ["error", 'always'],
     '@typescript-eslint/interface-name-prefix': 'off',
