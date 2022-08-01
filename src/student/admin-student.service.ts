@@ -1,15 +1,15 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from '../user/user.entity';
 import { StudentBonusProjectUrl } from './entities/student-bonus-project-url.entity';
-import { InsertStudentDto } from './dto/insert-student.dto';
 import { StudentInfo } from './entities/student-info.entity';
+import { InsertStudentDto } from './dto/insert-student.dto';
 import { StudentResponse, UserRole } from '../types';
 
 @Injectable()
 export class AdminStudentService {
     private async insertBonusProjectUrl(
         projectUrls: string[],
-        studentInfo: StudentInfo,
+        studentInfo: StudentInfo
     ) {
         projectUrls.map(async (project) => {
             const insertUrl = new StudentBonusProjectUrl();
@@ -23,7 +23,7 @@ export class AdminStudentService {
     }
 
     public async insertStudent(
-        student: InsertStudentDto,
+        student: InsertStudentDto
     ): Promise<StudentResponse> {
         const {
             email,
@@ -32,7 +32,7 @@ export class AdminStudentService {
             courseCompletion,
             courseEngagment,
             projectDegree,
-            teamProjectDegree,
+            teamProjectDegree
         } = student;
 
         const checkUser = await User.findOne({ where: { email: email } });
@@ -44,6 +44,7 @@ export class AdminStudentService {
         }
 
         const user = new User();
+
         try {
             user.email = email;
             user.role = UserRole.STUDENT;

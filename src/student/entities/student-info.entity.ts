@@ -10,6 +10,9 @@ import {
 } from 'typeorm';
 import { StudentPortfolioUrl } from './student-portfolio-url.entity';
 import { StudentProjectUrl } from './student-project-url.entity';
+import { User } from '../../user/user.entity';
+import { Hr } from '../../hr/entities/hr.entity';
+import { StudentBonusProjectUrl } from './student-bonus-project-url.entity';
 import {
     ExpectedContractType,
     ExpectedTypeWork,
@@ -20,50 +23,49 @@ import {
     StudentStatus,
     UserInterface
 } from '../../types';
-import { User } from '../../user/user.entity';
-import { Hr } from '../../hr/entities/hr.entity';
-import { StudentBonusProjectUrl } from './student-bonus-project-url.entity';
 
 @Entity()
 export class StudentInfo extends BaseEntity implements StudentInfoInterface {
     @PrimaryGeneratedColumn('uuid')
     id: string;
+
     @Column({
-        type: 'tinyint'
+        type: 'tinyint',
     })
     courseCompletion: number;
 
     @Column({
-        type: 'tinyint'
+        type: 'tinyint',
     })
     courseEngagment: number;
 
     @Column({
-        type: 'tinyint'
+        type: 'tinyint',
     })
     projectDegree: number;
 
     @Column({
-        type: 'tinyint'
+        type: 'tinyint',
     })
     teamProjectDegree: number;
 
     @OneToMany((type) => StudentBonusProjectUrl, (entity) => entity.studentInfo)
     @JoinColumn()
     bonusProjectUrls: StudentBonusProjectUrlInterface[];
+
     @Column({
         length: '15',
-        nullable: true
+        nullable: true,
     })
     tel: string;
 
     @Column({
-        length: 60
+        length: 60,
     })
     firstName: string;
 
     @Column({
-        length: 100
+        length: 100,
     })
     lastName: string;
 
@@ -71,12 +73,12 @@ export class StudentInfo extends BaseEntity implements StudentInfoInterface {
         length: 255,
         unique: true,
         default: null,
-        nullable: true
+        nullable: true,
     })
     githubUsername: string; //Należy sprawdzić za pomocą API GH lub innym sposobem, czy taka osoba istnieje.
 
     @OneToMany((type) => StudentPortfolioUrl, (entity) => entity.studentInfo, {
-        nullable: true
+        nullable: true,
     })
     portfolioUrls: StudentPortfolioUrlInterface[]; //Tablica URL-i do portfolio.
 
@@ -86,79 +88,85 @@ export class StudentInfo extends BaseEntity implements StudentInfoInterface {
     @Column({
         type: 'varchar',
         length: '400',
-        nullable: true
+        nullable: true,
     })
     bio: string;
+
     @Column({
         default: null,
-        nullable: true
+        nullable: true,
     })
     avatarUrl: string | null;
-    @Column({ type: 'tinyint', default: 0 })
+
+    @Column({
+        type: 'tinyint',
+        default: 0,
+    })
     expectedTypeWork: ExpectedTypeWork;
 
     @Column({
         length: 100,
-        nullable: true
+        nullable: true,
     })
     targetWorkCity: string;
 
     @Column({
         type: 'tinyint',
-        default: 0
+        default: 0,
     })
     expectedContractType: ExpectedContractType;
 
     @Column({
         length: 8,
-        nullable: true
+        nullable: true,
     })
     expectedSalary: string;
 
     @Column({
-        default: false
+        default: false,
     })
     canTakeApprenticeship: boolean;
 
     @Column({
         type: 'tinyint',
-        default: 0
+        default: 0,
     })
     monthsOfCommercialExp: number;
 
     @Column({
         type: 'text',
-        nullable: true
+        nullable: true,
     })
     education: string;
 
     @Column({
         type: 'text',
-        nullable: true
+        nullable: true,
     })
     workExperience: string;
 
     @Column({
         type: 'text',
-        nullable: true
+        nullable: true,
     })
     courses: string;
 
     @Column({
         type: 'tinyint',
-        default: 0
+        default: 0,
     })
     status: StudentStatus;
 
     @OneToOne((type) => User, {
-        onDelete: 'CASCADE'
+        onDelete: 'CASCADE',
     })
     @JoinColumn()
     user: UserInterface;
 
     @ManyToOne((type) => Hr, (entity) => entity.studentsToInterview, {
-        onDelete: 'CASCADE'
+        onDelete: 'CASCADE',
     })
+
     @JoinColumn()
     hr: Hr;
 }

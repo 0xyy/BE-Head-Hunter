@@ -7,7 +7,7 @@ import {
     ActiveStudentsResponse,
     StudentCvProfilResponse,
     StudentForInterviewResponse,
-    StudentResponse,
+    StudentResponse
 } from '../types';
 
 @Controller('student')
@@ -19,8 +19,8 @@ export class StudentController {
     @Get()
     AllActiveStudents(
         @Query('currentPage') currentPage: number,
-            @Query('pageSize') pageSize: number,
-            // @Query('pageCount') pageCount: number,
+        @Query('pageSize') pageSize: number,
+        // @Query('pageCount') pageCount: number,
     ): Promise<ActiveStudentsResponse> {
         return this.studentService.findAllActiveStudents(currentPage || 0, 1);
     }
@@ -48,21 +48,21 @@ export class StudentController {
 
     @Patch('update')
     update(
-    @Body() StudentDto: StudentDto,
+        @Body() StudentDto: StudentDto,
     ) {
         return this.studentService.update(StudentDto);
     }
 
     @Patch('reservation')
     reservation(
-    @Body() ReservationStudentDto: ReservationStudentDto,
+        @Body() ReservationStudentDto: ReservationStudentDto,
     ) {
         return this.studentService.reservation(ReservationStudentDto);
     }
 
     @Patch('deactivation')
     deactivation(
-    @Body() DeactivationStudentDto: DeactivationStudentDto,
+        @Body() DeactivationStudentDto: DeactivationStudentDto,
     ) {
         return this.studentService.deactivation(DeactivationStudentDto);
     }

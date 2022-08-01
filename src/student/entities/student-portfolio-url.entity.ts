@@ -1,8 +1,4 @@
 import {
-    StudentInfoInterface,
-    StudentPortfolioUrlInterface
-} from '../../types';
-import {
     BaseEntity,
     Column,
     Entity,
@@ -11,13 +7,16 @@ import {
     PrimaryGeneratedColumn
 } from 'typeorm';
 import { StudentInfo } from './student-info.entity';
+import {
+    StudentInfoInterface,
+    StudentPortfolioUrlInterface
+} from '../../types';
 
 @Entity()
-export class StudentPortfolioUrl
-    extends BaseEntity
-    implements StudentPortfolioUrlInterface {
+export class StudentPortfolioUrl extends BaseEntity implements StudentPortfolioUrlInterface {
     @PrimaryGeneratedColumn('uuid')
     id: string;
+
     @Column({
         length: 255
     })

@@ -10,17 +10,16 @@ import { StudentInfo } from './student-info.entity';
 import { StudentInfoInterface, StudentProjectUrlInterface } from '../../types';
 
 @Entity()
-export class StudentProjectUrl
-    extends BaseEntity
-    implements StudentProjectUrlInterface {
+export class StudentProjectUrl extends BaseEntity implements StudentProjectUrlInterface {
     @PrimaryGeneratedColumn('uuid')
-        id: string;
+    id: string;
+
     @Column({
         length: 255
     })
-        projectUrl: string;
+    projectUrl: string;
 
     @ManyToOne((type) => StudentInfo, (entity) => entity.projectUrls)
     @JoinColumn()
-        studentInfo: StudentInfoInterface;
+    studentInfo: StudentInfoInterface;
 }

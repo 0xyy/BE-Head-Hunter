@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { Hr } from '../hr/entities/hr.entity';
 import { User } from '../user/user.entity';
+import { StudentInfo } from './entities/student-info.entity';
 import { ReservationStudentDto } from './dto/reservation-student.dto';
 import { DeactivationStudentDto } from './dto/deactivation-student.dto';
-import { StudentInfo } from './entities/student-info.entity';
 import { StudentDto } from './dto/student.dto';
 import {
     ActiveStudentsResponse,
@@ -31,7 +31,7 @@ export class StudentService {
 
     async findAllActiveStudents(
         currentPage,
-        pageSize,
+        pageSize
     ): Promise<ActiveStudentsResponse> {
         const students = await StudentInfo.find(); // querrybuilder
 
@@ -53,7 +53,7 @@ export class StudentService {
     private async createStudentInfo(
         user: UserInterface,
         studentInfo: StudentDto,
-        avatarUrl: string | null,
+        avatarUrl: string | null
     ): Promise<StudentInfoInterface> {
         const student = new StudentInfo();
 
@@ -73,7 +73,7 @@ export class StudentService {
 
     private async updateStudentInfo(
         id: string,
-        studentInfo: StudentDto,
+        studentInfo: StudentDto
     ): Promise<StudentInfoInterface> {
         try {
             const oldStudentInfo = await StudentInfo.findOneOrFail({ where: { id } });
@@ -97,7 +97,7 @@ export class StudentService {
     async findGithubAvatar(name) {
         try {
             const github = await this.httpService.axiosRef.get(
-                `https://api.github.com/users/${name}`,
+                `https://api.github.com/users/${name}`
             );
             return {
                 message: github.data.avatar_url || '',
