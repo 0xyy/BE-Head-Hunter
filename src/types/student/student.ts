@@ -20,7 +20,7 @@ export interface StudentInfoInterface {
     targetWorkCity?: string;
     expectedContractType: ExpectedContractType;
     expectedSalary?: string;
-    canTakeApprenticeship: boolean;
+    canTakeApprenticeship: 'Tak' | 'Nie';
     monthsOfCommercialExp: number;
     education?: string;
     workExperience?: string;
@@ -45,6 +45,22 @@ export interface StudentProjectUrlInterface {
     id: string;
     projectUrl: string;
     studentInfo: StudentInfoInterface;
+}
+
+export interface StudentAvailabilityViewInterface {
+    studentId: string;
+    firstName: string;
+    lastName: string;
+    courseCompletion: number;
+    courseEngagment: number;
+    projectDegree: number;
+    teamProjectDegree: number;
+    expectedTypeWork: ExpectedTypeWork;
+    targetWorkCity?: string;
+    expectedContractType: ExpectedContractType;
+    expectedSalary?: string;
+    canTakeApprenticeship: 'Tak' | 'Nie';
+    monthsOfCommercialExp: number;
 }
 
 export enum StudentStatus {
@@ -73,22 +89,20 @@ export type StudentResponse = {
 };
 
 export type ActiveStudentsResponse =
-    | {
+    {
         isSuccess: true;
         pageCount: number;
-    } | {
-        isSuccess: false;
-        message: string;
+        students: StudentAvailabilityViewInterface[];
     };
 
 export type StudentInfoUpdateResponse =
     | {
-        studentInfoId: string;
-        isSuccess: true;
-    } | {
-        message: string;
-        isSuccess: false;
-    };
+    studentInfoId: string;
+    isSuccess: true;
+} | {
+    message: string;
+    isSuccess: false;
+};
 
 export type StudentForInterviewResponse = {
     currentPage: number;

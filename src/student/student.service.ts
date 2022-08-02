@@ -7,7 +7,7 @@ import { ReservationStudentDto } from './dto/reservation-student.dto';
 import { DeactivationStudentDto } from './dto/deactivation-student.dto';
 import { StudentDto } from './dto/student.dto';
 import {
-    ActiveStudentsResponse,
+    ActiveStudentsResponse, StudentAvailabilityViewInterface,
     StudentInfoInterface,
     StudentInfoUpdateResponse,
     StudentStatus,
@@ -28,25 +28,63 @@ export class StudentService {
         });
     }
 
+    private filterAvailabilityStudent = (students: StudentInfoInterface[]): StudentAvailabilityViewInterface[] => {
+        return students.map(student => {
+            const {
+                id: studentId,
+                firstName,
+                lastName,
+                courseCompletion,
+                courseEngagment,
+                projectDegree,
+                teamProjectDegree,
+                expectedTypeWork,
+                targetWorkCity,
+                expectedContractType,
+                expectedSalary,
+                canTakeApprenticeship,
+                monthsOfCommercialExp,
+            } = student;
+            return {
+                studentId,
+                firstName,
+                lastName,
+                courseCompletion,
+                courseEngagment,
+                projectDegree,
+                teamProjectDegree,
+                expectedTypeWork,
+                targetWorkCity,
+                expectedContractType,
+                expectedSalary,
+                canTakeApprenticeship,
+                monthsOfCommercialExp,
+            };
+        });
+
+    };
+
     async findAllActiveStudents(
         currentPage,
         pageSize,
-    ): Promise<any> {
-
-        const [students, count] = await StudentInfo.findAndCount({
-            where: {
-                status: StudentStatus.ACCESSIBLE,
-            },
-            take: pageSize,
-            skip: pageSize * (currentPage - 1),
-        });
-
-        const pageCount = Math.ceil(count / pageSize);
-        return {
-            isSuccess: true,
-            pageCount,
-            students,
-        };
+    ): Promise<ActiveStudentsResponse> {
+        try {
+            const [students, count] = await StudentInfo.findAndCount({
+                where: {
+                    status: StudentStatus.ACCESSIBLE,
+                },
+                take: pageSize,
+                skip: pageSize * (currentPage - 1),
+            });
+            const pageCount = Math.ceil(count / pageSize);
+            return {
+                isSuccess: true,
+                pageCount,
+                students: this.filterAvailabilityStudent(students),
+            };
+        } catch (e) {
+            throw new Error(e.message);
+        }
     }
 
     private async updateStudentInfo(
