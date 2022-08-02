@@ -123,9 +123,10 @@ export class StudentInfo extends BaseEntity implements StudentInfoInterface {
     expectedSalary: string;
 
     @Column({
-        default: false,
+        length: 3,
+        default: 'Nie',
     })
-    canTakeApprenticeship: boolean;
+    canTakeApprenticeship: 'Tak' | 'Nie';
 
     @Column({
         type: 'tinyint',
