@@ -1,7 +1,17 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { HrService } from './hr.service';
 import { StudentService } from '../student/student.service';
-import { ActiveStudentsResponse, StudentCvProfilResponse, StudentForInterviewResponse } from '../types';
+import {
+    ActiveStudentsResponse,
+    StudentCvProfilResponse,
+    StudentsToInterviewResponse,
+    UserRole,
+} from '../types';
+import { Roles } from '../decorators/roles.decorator';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../guards/roles.guard';
+import { UserObj } from '../decorators/user-obj.decorator';
+import { User } from '../user/user.entity';
 
 @Controller('/hr')
 export class HrController {
@@ -12,6 +22,8 @@ export class HrController {
     }
 
     @Get('/students/available')
+    @Roles(UserRole.HR)
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
     AllActiveStudents(
         @Query('currentPage') currentPage: number,
         @Query('pageSize') pageSize: number,
@@ -19,11 +31,15 @@ export class HrController {
         return this.studentService.findAllActiveStudents(currentPage || 1, pageSize || 10);
     }
 
-    @Get('interview/:hrId')
-    findAllForInterview(
-        @Param('hrId') hrId: string,
-    ): StudentForInterviewResponse {
-        return this.studentService.findAllForInterview(hrId);
+    @Get('interview/')
+    @Roles(UserRole.HR)
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    findAllToInterview(
+        @Query('currentPage') currentPage: number,
+        @Query('pageSize') pageSize: number,
+        @UserObj() user: User,
+    ): Promise<StudentsToInterviewResponse> {
+        return this.studentService.findAllToInterview(currentPage || 1, pageSize || 10, user);
     }
 
     @Get('cv/:id')

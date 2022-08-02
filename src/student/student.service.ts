@@ -10,7 +10,7 @@ import {
     ActiveStudentsResponse, StudentAvailabilityViewInterface,
     StudentInfoInterface,
     StudentInfoUpdateResponse,
-    StudentStatus,
+    StudentStatus, StudentsToInterviewInterface, StudentsToInterviewResponse,
     UserRole,
 } from '../types';
 
@@ -61,12 +61,50 @@ export class StudentService {
                 monthsOfCommercialExp,
             };
         });
+    };
 
+    private filterStudentsToInterview = (students: StudentInfoInterface[]): StudentsToInterviewInterface[] => {
+        return students.map(student => {
+            const {
+                id: studentId,
+                firstName,
+                lastName,
+                courseCompletion,
+                courseEngagment,
+                projectDegree,
+                teamProjectDegree,
+                expectedTypeWork,
+                targetWorkCity,
+                expectedContractType,
+                expectedSalary,
+                canTakeApprenticeship,
+                monthsOfCommercialExp,
+                avatarUrl,
+                reservationTo,
+            } = student;
+            return {
+                studentId,
+                firstName,
+                lastName,
+                courseCompletion,
+                courseEngagment,
+                projectDegree,
+                teamProjectDegree,
+                expectedTypeWork,
+                targetWorkCity,
+                expectedContractType,
+                expectedSalary,
+                canTakeApprenticeship,
+                monthsOfCommercialExp,
+                avatarUrl,
+                reservationTo,
+            };
+        });
     };
 
     async findAllActiveStudents(
-        currentPage,
-        pageSize,
+        currentPage: number,
+        pageSize: number,
     ): Promise<ActiveStudentsResponse> {
         try {
             const [students, count] = await StudentInfo.findAndCount({
@@ -81,6 +119,30 @@ export class StudentService {
                 isSuccess: true,
                 pageCount,
                 students: this.filterAvailabilityStudent(students),
+            };
+        } catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    async findAllToInterview(
+        currentPage:number,
+        pageSize: number,
+        user: User,
+    ): Promise<StudentsToInterviewResponse> {
+        try {
+            const [students, count] = await StudentInfo.findAndCount({
+                where: {
+                    hr: user.hr,
+                },
+                take: pageSize,
+                skip: pageSize * (currentPage - 1),
+            });
+            const pageCount = Math.ceil(count / pageSize);
+            return {
+                isSuccess: true,
+                pageCount,
+                students: this.filterStudentsToInterview(students),
             };
         } catch (e) {
             throw new Error(e.message);
@@ -230,10 +292,6 @@ export class StudentService {
     }
 
     findOneCV(id: string) {
-        return undefined;
-    }
-
-    findAllForInterview(hrId: string) {
         return undefined;
     }
 

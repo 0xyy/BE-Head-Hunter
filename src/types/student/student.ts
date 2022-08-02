@@ -1,4 +1,3 @@
-import { HrStudentForInterviewDto } from '../../student/dto/hr-student-for-interview.dto';
 import { UserInterface } from '../user';
 
 export interface StudentInfoInterface {
@@ -27,6 +26,7 @@ export interface StudentInfoInterface {
     courses?: string;
     status: StudentStatus;
     user: UserInterface;
+    reservationTo: Date;
 }
 
 export interface StudentBonusProjectUrlInterface {
@@ -63,6 +63,11 @@ export interface StudentAvailabilityViewInterface {
     monthsOfCommercialExp: number;
 }
 
+export interface StudentsToInterviewInterface extends StudentAvailabilityViewInterface {
+    avatarUrl?: string;
+    reservationTo: Date;
+}
+
 export enum StudentStatus {
     ACCESSIBLE,
     PENDING,
@@ -94,6 +99,12 @@ export type ActiveStudentsResponse =
         pageCount: number;
         students: StudentAvailabilityViewInterface[];
     };
+export type StudentsToInterviewResponse =
+    {
+        isSuccess: true;
+        pageCount: number;
+        students: StudentsToInterviewInterface[];
+    };
 
 export type StudentInfoUpdateResponse =
     | {
@@ -102,13 +113,6 @@ export type StudentInfoUpdateResponse =
 } | {
     message: string;
     isSuccess: false;
-};
-
-export type StudentForInterviewResponse = {
-    currentPage: number;
-    pageSize: number;
-    pageCount: number;
-    students: HrStudentForInterviewDto[];
 };
 
 export type StudentCvProfilResponse = {

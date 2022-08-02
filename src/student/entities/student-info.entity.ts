@@ -6,7 +6,7 @@ import {
     ManyToOne,
     OneToMany,
     OneToOne,
-    PrimaryGeneratedColumn
+    PrimaryGeneratedColumn,
 } from 'typeorm';
 import { StudentPortfolioUrl } from './student-portfolio-url.entity';
 import { StudentProjectUrl } from './student-project-url.entity';
@@ -21,7 +21,7 @@ import {
     StudentPortfolioUrlInterface,
     StudentProjectUrlInterface,
     StudentStatus,
-    UserInterface
+    UserInterface,
 } from '../../types';
 
 @Entity()
@@ -170,4 +170,12 @@ export class StudentInfo extends BaseEntity implements StudentInfoInterface {
 
     @JoinColumn()
     hr: Hr;
+
+    @Column(
+        {
+            nullable: true,
+            default: null,
+        },
+    )
+    reservationTo: Date;
 }
