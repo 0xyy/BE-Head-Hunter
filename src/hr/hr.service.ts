@@ -6,14 +6,6 @@ import { AdminCreateHrResponse } from '../types';
 
 @Injectable()
 export class HrService {
-    async getStudentsToTalk() {
-        return;
-    }
-
-    async getAvailableStudents() {
-        return;
-    }
-
     async createHr(hr: AdminInsertHr): Promise<AdminCreateHrResponse> {
         const checkUser = await User.findOne({ where: { email: hr.email } });
 

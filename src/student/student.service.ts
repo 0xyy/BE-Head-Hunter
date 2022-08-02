@@ -10,17 +10,16 @@ import {
     ActiveStudentsResponse,
     StudentInfoInterface,
     StudentInfoUpdateResponse,
-    StudentResponse,
     StudentStatus,
-    UserInterface,
-    UserRole
+    UserRole,
 } from '../types';
 
 @Injectable()
 export class StudentService {
     constructor(
         private httpService: HttpService,
-    ) {}
+    ) {
+    }
 
     private async getUser(id: string): Promise<User | null> {
         return await User.findOne({
@@ -31,7 +30,7 @@ export class StudentService {
 
     async findAllActiveStudents(
         currentPage,
-        pageSize
+        pageSize,
     ): Promise<ActiveStudentsResponse> {
         const students = await StudentInfo.find(); // querrybuilder
 
@@ -50,54 +49,28 @@ export class StudentService {
         };
     }
 
-    private async createStudentInfo(
-        user: UserInterface,
-        studentInfo: StudentDto,
-        avatarUrl: string | null
-    ): Promise<StudentInfoInterface> {
-        const student = new StudentInfo();
-
-        for (const key of Object.keys(studentInfo)) {
-            student[key] = studentInfo[key];
-        }
-
-        student.avatarUrl = avatarUrl || null;
-        student.user = user;
-
-        try {
-            return await student.save();
-        } catch (e) {
-            throw new Error('Stworzenie kursanta nie powiodło się');
-        }
-    }
-
     private async updateStudentInfo(
         id: string,
-        studentInfo: StudentDto
+        studentInfo: StudentDto,
+        avatarUrl: string | null,
     ): Promise<StudentInfoInterface> {
         try {
             const oldStudentInfo = await StudentInfo.findOneOrFail({ where: { id } });
-
             for (const key of Object.keys(studentInfo)) {
                 oldStudentInfo[key] = studentInfo[key];
             }
-
+            oldStudentInfo.avatarUrl = avatarUrl || null;
             await oldStudentInfo.save();
-
             return oldStudentInfo;
         } catch (e) {
             throw new Error('Aktualizacja kursanta nie powiodła się');
         }
     }
 
-    findOne(id: string): StudentResponse {
-        return undefined;
-    }
-
     async findGithubAvatar(name) {
         try {
             const github = await this.httpService.axiosRef.get(
-                `https://api.github.com/users/${name}`
+                `https://api.github.com/users/${name}`,
             );
             return {
                 message: github.data.avatar_url || '',
@@ -111,71 +84,53 @@ export class StudentService {
     }
 
     async update(studentInfo: StudentDto): Promise<StudentInfoUpdateResponse> {
-        const user = await this.getUser(studentInfo.userId);
-        const avatarUrl = await this.findGithubAvatar(studentInfo.githubUsername);
-
-        if (!avatarUrl.isSuccess) {
-            return {
-                message: 'Nie znaleziono konta github.',
-                isSuccess: false,
-            };
-        }
-
-        if (!user) {
-            return {
-                message: 'Nie znaleziono użytkownika.',
-                isSuccess: false,
-            };
-        }
-
-        if (!user.active) {
-            return {
-                message: 'Użytkownik jest nieaktywny.',
-                isSuccess: false,
-            };
-        }
-
-        if (!user.studentInfo && user.active) {
+        try {
+            const user = await this.getUser(studentInfo.userId);
+            const avatarUrl = await this.findGithubAvatar(studentInfo.githubUsername);
+            if (!avatarUrl.isSuccess) {
+                return {
+                    message: 'Nie znaleziono konta github.',
+                    isSuccess: false,
+                };
+            }
+            if (!user) {
+                return {
+                    message: 'Nie znaleziono użytkownika.',
+                    isSuccess: false,
+                };
+            }
+            if (!user.active) {
+                return {
+                    message: 'Użytkownik jest nieaktywny.',
+                    isSuccess: false,
+                };
+            }
             const checkGithub = await StudentInfo.findOne({
                 where: { githubUsername: studentInfo.githubUsername },
             });
-
             if (!!checkGithub) {
                 return {
                     message: 'Konto o takiej nazwie użytkownika Github jest juz zarejestrowane.',
                     isSuccess: false,
                 };
             }
-
-            const newStudent = await this.createStudentInfo(
-                user,
-                studentInfo,
-                avatarUrl.message,
-            );
-
-            user.studentInfo = newStudent;
-            await user.save();
-
-            return {
-                studentInfoId: newStudent.id,
-                isSuccess: true,
-            };
-        } else if (user.studentInfo && user.active) {
             const student = await this.updateStudentInfo(
                 user.studentInfo.id,
                 studentInfo,
+                avatarUrl.message,
             );
 
             return {
                 studentInfoId: student.id,
                 isSuccess: true,
             };
-        }
 
-        return {
-            message: 'Aktualizacja kursanta nie powiodła się',
-            isSuccess: false,
-        };
+        } catch (e) {
+            return {
+                message: 'Aktualizacja kursanta nie powiodła się',
+                isSuccess: false,
+            };
+        }
     }
 
     async reservation({ userId, hrId }: ReservationStudentDto) {
