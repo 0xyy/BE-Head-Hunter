@@ -1,8 +1,8 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
 import { HrService } from './hr.service';
 import { StudentService } from '../student/student.service';
 import {
-    ActiveStudentsResponse,
+    ActiveStudentsResponse, ReservationStudentResponse,
     StudentInfoInterface,
     StudentsToInterviewResponse,
     UserRole,
@@ -12,6 +12,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../guards/roles.guard';
 import { UserObj } from '../decorators/user-obj.decorator';
 import { User } from '../user/user.entity';
+import { ReservationStudentDto } from './../student/dto/reservation-student.dto';
 
 @Controller('/hr')
 export class HrController {
@@ -49,5 +50,15 @@ export class HrController {
         @Param('id') id: string,
     ):Promise<StudentInfoInterface> {
         return this.studentService.findOneCV(id);
+    }
+
+    @Patch('reservation')
+    @Roles(UserRole.HR)
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    reservation(
+        @Body() ReservationStudentDto: ReservationStudentDto,
+        @UserObj() user: User,
+    ):Promise<ReservationStudentResponse> {
+        return this.studentService.reservation(ReservationStudentDto,user);
     }
 }

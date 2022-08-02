@@ -7,7 +7,7 @@ import { ReservationStudentDto } from './dto/reservation-student.dto';
 import { DeactivationStudentDto } from './dto/deactivation-student.dto';
 import { StudentDto } from './dto/student.dto';
 import {
-    ActiveStudentsResponse, StudentAvailabilityViewInterface,
+    ActiveStudentsResponse, ReservationStudentResponse, StudentAvailabilityViewInterface,
     StudentInfoInterface,
     StudentInfoUpdateResponse,
     StudentStatus, StudentsToInterviewInterface, StudentsToInterviewResponse,
@@ -21,11 +21,26 @@ export class StudentService {
     ) {
     }
 
-    private async getUser(id: string): Promise<User | null> {
-        return await User.findOne({
-            where: { id },
-            relations: ['studentInfo'],
-        });
+    private async getUser(id: string): Promise<User> {
+        try {
+            return await User.findOneOrFail({
+                where: { id },
+                relations: ['StudentInfo'],
+            });
+        } catch (e) {
+            throw new BadRequestException('Nie ma takiego kursanta.');
+        }
+    }
+
+    private async getStudent(id: string): Promise<StudentInfo> {
+        try {
+            return await StudentInfo.findOneOrFail({
+                where: { id },
+                relations: ['user'],
+            });
+        } catch (e) {
+            throw new BadRequestException('Nie ma takiego kursanta.');
+        }
     }
 
     private filterAvailabilityStudent = (students: StudentInfoInterface[]): StudentAvailabilityViewInterface[] => {
@@ -234,61 +249,44 @@ export class StudentService {
         }
     }
 
-    async reservation({ userId, hrId }: ReservationStudentDto) {
-        const student = await this.getUser(userId);
-        const { active, role } = student;
-        const { status } = student.studentInfo;
-
-        const hr = await Hr.findOne({
-            where: { id: hrId },
-            relations: ['studentsToInterview'],
-        });
+    async reservation({ studentId }: ReservationStudentDto, user: User): Promise<ReservationStudentResponse> {
+        const { hr } = user;
+        const student = await this.getStudent(studentId);
+        const active = student.user.active;
+        const { status } = student;
 
         const { maxReservedStudents } = hr;
-
         if (maxReservedStudents <= hr.studentsToInterview.length) {
-            return {
-                message: 'Nie możesz dodać więcej kursantów "Do Rozmowy.',
-                isSuccess: false,
-            };
+            throw new BadRequestException('Nie możesz dodać więcej kursantów "Do Rozmowy.');
         }
-
-        if (!student) {
-            return {
-                message: 'Nie ma takiego studenta',
-                isSuccess: false,
-            };
-        }
-
-        if (!hr) {
-            return {
-                message: 'Nie ma takiego hr',
-                isSuccess: false,
-            };
-        }
-
         if (
             active === false ||
-            role !== UserRole.STUDENT ||
             status !== StudentStatus.ACCESSIBLE
         ) {
-            return {
-                message: 'Nie można dodać studenta.',
-                isSuccess: false,
-            };
+            throw new BadRequestException('Kursant jest niedostępny.');
         }
 
         const { affected } = await StudentInfo.update(
-            { id: student.studentInfo.id, status: StudentStatus.ACCESSIBLE },
-            { status: StudentStatus.PENDING, hr },
+            {
+                id: student.id,
+                status: StudentStatus.ACCESSIBLE,
+            },
+            {
+                status: StudentStatus.PENDING,
+                hr,
+                reservationTo: new Date(new Date().getTime() + (10 * 24 * 60 * 60 * 1000)),
+            },
         );
-
         if (affected === 0) {
             return {
+                message: 'Nie udało się dodać kursanta "Do rozmowy"',
                 isSuccess: false,
             };
         } else {
-            return { isSuccess: true };
+            return {
+                message: 'Dodano kursanta "Do rozmowy"',
+                isSuccess: true,
+            };
         }
     }
 

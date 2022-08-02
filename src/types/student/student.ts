@@ -114,3 +114,7 @@ export type StudentInfoUpdateResponse =
     message: string;
     isSuccess: false;
 };
+export type ReservationStudentResponse = {
+    isSuccess: boolean;
+    message: string
+}

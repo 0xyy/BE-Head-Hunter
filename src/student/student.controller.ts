@@ -2,7 +2,6 @@ import { Controller, Body, Patch } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { StudentDto } from './dto/student.dto';
 import { DeactivationStudentDto } from './dto/deactivation-student.dto';
-import { ReservationStudentDto } from './dto/reservation-student.dto';
 
 @Controller('student')
 export class StudentController {
@@ -15,13 +14,6 @@ export class StudentController {
         @Body() StudentDto: StudentDto,
     ) {
         return this.studentService.update(StudentDto);
-    }
-
-    @Patch('reservation')
-    reservation(
-        @Body() ReservationStudentDto: ReservationStudentDto,
-    ) {
-        return this.studentService.reservation(ReservationStudentDto);
     }
 
     @Patch('deactivation')
