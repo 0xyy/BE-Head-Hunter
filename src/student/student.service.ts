@@ -31,21 +31,21 @@ export class StudentService {
     async findAllActiveStudents(
         currentPage,
         pageSize,
-    ): Promise<ActiveStudentsResponse> {
-        const students = await StudentInfo.find(); // querrybuilder
+    ): Promise<any> {
 
-        if (!students) {
-            return {
-                message: 'Brak kursantów',
-                isSuccess: false,
-            };
-        }
+        const [students, count] = await StudentInfo.findAndCount({
+            where: {
+                status: StudentStatus.ACCESSIBLE,
+            },
+            take: pageSize,
+            skip: pageSize * (currentPage - 1),
+        });
 
-        const pageCount = Math.ceil(students.length / pageSize);
-
+        const pageCount = Math.ceil(count / pageSize);
         return {
             isSuccess: true,
             pageCount,
+            students,
         };
     }
 

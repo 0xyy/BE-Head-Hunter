@@ -15,9 +15,8 @@ export class HrController {
     AllActiveStudents(
         @Query('currentPage') currentPage: number,
         @Query('pageSize') pageSize: number,
-            // @Query('pageCount') pageCount: number,
     ): Promise<ActiveStudentsResponse> {
-        return this.studentService.findAllActiveStudents(currentPage || 0, 1);
+        return this.studentService.findAllActiveStudents(currentPage || 1, pageSize || 10);
     }
 
     @Get('interview/:hrId')
