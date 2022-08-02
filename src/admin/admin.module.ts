@@ -8,8 +8,8 @@ import { AuthModule } from '../auth/auth.module';
 import { MailModule } from '../mail/mail.module';
 
 @Module({
-  imports: [UserModule, HrModule, StudentModule, AuthModule, MailModule],
-  controllers: [AdminController],
-  providers: [AdminService],
+    imports: [UserModule, HrModule, StudentModule, AuthModule, MailModule],
+    controllers: [AdminController],
+    providers: [AdminService],
 })
 export class AdminModule {}

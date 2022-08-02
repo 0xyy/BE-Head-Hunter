@@ -5,9 +5,9 @@ import { AdminStudentService } from './admin-student.service';
 import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [HttpModule],
-  controllers: [StudentController],
-  providers: [StudentService, AdminStudentService],
-  exports: [StudentService, AdminStudentService],
+    imports: [HttpModule],
+    controllers: [StudentController],
+    providers: [StudentService, AdminStudentService],
+    exports: [StudentService, AdminStudentService],
 })
 export class StudentModule {}

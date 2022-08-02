@@ -20,13 +20,16 @@ export interface UserInterface {
 export type EditPasswordResponse = {
   isSuccess: boolean;
 };
+
 export type ActivateUserResponse = {
   message: string;
   isSuccess: boolean;
 };
+
 export type RecoverPasswordResponse = {
   isSuccess: boolean;
 };
+
 export enum UserRole {
   ADMIN,
   STUDENT,
