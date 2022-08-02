@@ -27,7 +27,7 @@ export class AdminController {
 
     @Roles(UserRole.ADMIN)
     @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @Post(`/createUsersFromFile`)
+    @Post('/createUsersFromFile')
     @UseInterceptors(FileInterceptor('file'))
     importUsersFromJSONFile(
         @UploadedFile() file,
@@ -38,7 +38,7 @@ export class AdminController {
 
     @Roles(UserRole.ADMIN)
     @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @Post(`/addHr`)
+    @Post('/addHr')
     addHRUser(
         @Body() body: CreateHrDto,
     ): Promise<CreateHrResponse> {
