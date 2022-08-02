@@ -167,7 +167,7 @@ export class StudentService {
         }
     }
 
-    async findGithubAvatar(name) {
+    private async findGithubAvatar(name) {
         try {
             const github = await this.httpService.axiosRef.get(
                 `https://api.github.com/users/${name}`,
@@ -179,6 +179,7 @@ export class StudentService {
         } catch (e) {
             return {
                 isSuccess: false,
+                message: 'Nie znaleziono avatara na github.',
             };
         }
     }
