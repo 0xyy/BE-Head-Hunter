@@ -3,7 +3,7 @@ import { HrService } from './hr.service';
 import { StudentService } from '../student/student.service';
 import {
     ActiveStudentsResponse,
-    StudentCvProfilResponse,
+    StudentInfoInterface,
     StudentsToInterviewResponse,
     UserRole,
 } from '../types';
@@ -43,9 +43,11 @@ export class HrController {
     }
 
     @Get('cv/:id')
+    @Roles(UserRole.HR)
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
     showStudentCv(
         @Param('id') id: string,
-    ): StudentCvProfilResponse {
+    ):Promise<StudentInfoInterface> {
         return this.studentService.findOneCV(id);
     }
 }

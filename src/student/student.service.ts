@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { Hr } from '../hr/entities/hr.entity';
 import { User } from '../user/user.entity';
@@ -126,7 +126,7 @@ export class StudentService {
     }
 
     async findAllToInterview(
-        currentPage:number,
+        currentPage: number,
         pageSize: number,
         user: User,
     ): Promise<StudentsToInterviewResponse> {
@@ -291,8 +291,17 @@ export class StudentService {
         }
     }
 
-    findOneCV(id: string) {
-        return undefined;
+    async findOneCV(id: string): Promise<StudentInfoInterface> {
+        const student = await StudentInfo.findOne({
+            where: {
+                id,
+            },
+            relations: ['bonusProjectUrls', 'portfolioUrls', 'projectUrls'],
+        });
+        if (!student) {
+            throw new BadRequestException('Nie znaleziono użytkownika.');
+        }
+        return student;
     }
 
     async deactivation({ userId }: DeactivationStudentDto) {
