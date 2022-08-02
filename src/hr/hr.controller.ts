@@ -12,7 +12,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../guards/roles.guard';
 import { UserObj } from '../decorators/user-obj.decorator';
 import { User } from '../user/user.entity';
-import { ReservationStudentDto } from './../student/dto/reservation-student.dto';
+import { ReservationStudentDto } from '../student/dto/reservation-student.dto';
 
 @Controller('/hr')
 export class HrController {

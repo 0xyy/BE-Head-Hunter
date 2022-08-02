@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { Hr } from '../hr/entities/hr.entity';
 import { User } from '../user/user.entity';
 import { StudentInfo } from './entities/student-info.entity';
 import { ReservationStudentDto } from './dto/reservation-student.dto';

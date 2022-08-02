@@ -7,7 +7,8 @@ import { DeactivationStudentDto } from './dto/deactivation-student.dto';
 export class StudentController {
     constructor(
         private readonly studentService: StudentService,
-    ) {}
+    ) {
+    }
 
     @Patch('update')
     update(
