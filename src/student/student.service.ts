@@ -6,12 +6,19 @@ import { ReservationStudentDto } from './dto/reservation-student.dto';
 import { DeactivationStudentDto } from './dto/deactivation-student.dto';
 import { StudentDto } from './dto/student.dto';
 import {
-    ActiveStudentsResponse, ReservationStudentResponse, StudentAvailabilityViewInterface,
+    ActiveStudentsResponse,
+    ExpectedContractType,
+    ExpectedTypeWork,
+    ReservationStudentResponse,
+    StudentAvailabilityViewInterface,
     StudentInfoInterface,
     StudentInfoUpdateResponse,
-    StudentStatus, StudentsToInterviewInterface, StudentsToInterviewResponse,
+    StudentStatus,
+    StudentsToInterviewInterface,
+    StudentsToInterviewResponse,
     UserRole,
 } from '../types';
+import { dataSource } from '../config/config-database';
 
 @Injectable()
 export class StudentService {
@@ -121,13 +128,36 @@ export class StudentService {
         pageSize: number,
     ): Promise<ActiveStudentsResponse> {
         try {
-            const [students, count] = await StudentInfo.findAndCount({
-                where: {
+            const courseCompletion = 1;
+            const courseEngagment = 1;
+            const projectDegree = 5;
+            const teamProjectDegree = 1;
+            const expectedTypeWork = ExpectedTypeWork.HYBRID;
+            const expectedContractType = ExpectedContractType.B2B;
+            const expectedSalaryMin = '0';
+            const expectedSalaryMax = '10000';
+            const canTakeApprenticeship = 'Nie';
+            const monthsOfCommercialExp = 0;
+
+            const [students, count] = await dataSource
+                .getRepository(StudentInfo)
+                .createQueryBuilder()
+                .where('status = :status AND courseCompletion >= :courseCompletion AND courseEngagment >= :courseEngagment AND projectDegree >= :projectDegree AND teamProjectDegree >= :teamProjectDegree AND (expectedTypeWork = :expectedTypeWork OR expectedTypeWork = "Bez znaczenia") AND (expectedContractType = :expectedContractType OR expectedContractType = "Bez znaczenia") AND (expectedSalary BETWEEN :expectedSalaryMin AND :expectedSalaryMax OR expectedSalary IS null) AND canTakeApprenticeship = :canTakeApprenticeship AND monthsOfCommercialExp >= :monthsOfCommercialExp', {
                     status: StudentStatus.ACCESSIBLE,
-                },
-                take: pageSize,
-                skip: pageSize * (currentPage - 1),
-            });
+                    courseCompletion,
+                    courseEngagment,
+                    projectDegree,
+                    teamProjectDegree,
+                    expectedTypeWork,
+                    expectedContractType,
+                    expectedSalaryMin,
+                    expectedSalaryMax,
+                    canTakeApprenticeship,
+                    monthsOfCommercialExp,
+                })
+                .skip(pageSize * (currentPage - 1))
+                .take(pageSize)
+                .getManyAndCount();
             const pageCount = Math.ceil(count / pageSize);
             return {
                 isSuccess: true,
@@ -145,13 +175,37 @@ export class StudentService {
         user: User,
     ): Promise<StudentsToInterviewResponse> {
         try {
-            const [students, count] = await StudentInfo.findAndCount({
-                where: {
-                    hr: user.hr,
-                },
-                take: pageSize,
-                skip: pageSize * (currentPage - 1),
-            });
+            const courseCompletion = 1;
+            const courseEngagment = 1;
+            const projectDegree = 5;
+            const teamProjectDegree = 1;
+            const expectedTypeWork = ExpectedTypeWork.HYBRID;
+            const expectedContractType = ExpectedContractType.B2B;
+            const expectedSalaryMin = '0';
+            const expectedSalaryMax = '10000';
+            const canTakeApprenticeship = 'Nie';
+            const monthsOfCommercialExp = 0;
+
+            const [students, count] = await dataSource
+                .getRepository(StudentInfo)
+                .createQueryBuilder()
+                .where('hrId = :hr AND courseCompletion >= :courseCompletion AND courseEngagment >= :courseEngagment AND projectDegree >= :projectDegree AND teamProjectDegree >= :teamProjectDegree AND (expectedTypeWork = :expectedTypeWork OR expectedTypeWork = "Bez znaczenia") AND (expectedContractType = :expectedContractType OR expectedContractType = "Bez znaczenia") AND (expectedSalary BETWEEN :expectedSalaryMin AND :expectedSalaryMax OR expectedSalary IS null) AND canTakeApprenticeship = :canTakeApprenticeship AND monthsOfCommercialExp >= :monthsOfCommercialExp', {
+                    hr: user.hr.id,
+                    courseCompletion,
+                    courseEngagment,
+                    projectDegree,
+                    teamProjectDegree,
+                    expectedTypeWork,
+                    expectedContractType,
+                    expectedSalaryMin,
+                    expectedSalaryMax,
+                    canTakeApprenticeship,
+                    monthsOfCommercialExp,
+                })
+                .skip(pageSize * (currentPage - 1))
+                .take(pageSize)
+                .getManyAndCount();
+
             const pageCount = Math.ceil(count / pageSize);
             return {
                 isSuccess: true,
