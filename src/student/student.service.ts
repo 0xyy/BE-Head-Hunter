@@ -138,6 +138,7 @@ export class StudentService {
             const expectedSalaryMax = '10000';
             const canTakeApprenticeship = 'Nie';
             const monthsOfCommercialExp = 0;
+            const searchTerm = 'b2b kraków';
 
             const [students, count] = await dataSource
                 .getRepository(StudentInfo)
@@ -154,6 +155,9 @@ export class StudentService {
                     expectedSalaryMax,
                     canTakeApprenticeship,
                     monthsOfCommercialExp,
+                }).andWhere(searchTerm.length === 0 ? 'status = :status' : '(MATCH(targetWorkCity) AGAINST (":searchTerm*" IN BOOLEAN MODE) OR MATCH(expectedTypeWork) AGAINST (":searchTerm*" IN BOOLEAN MODE) OR MATCH(expectedContractType) AGAINST (":searchTerm*" IN BOOLEAN MODE))', {
+                    status: StudentStatus.ACCESSIBLE,
+                    searchTerm,
                 })
                 .skip(pageSize * (currentPage - 1))
                 .take(pageSize)
@@ -185,6 +189,7 @@ export class StudentService {
             const expectedSalaryMax = '10000';
             const canTakeApprenticeship = 'Nie';
             const monthsOfCommercialExp = 0;
+            const searchTerm = 'Kuba';
 
             const [students, count] = await dataSource
                 .getRepository(StudentInfo)
@@ -201,6 +206,9 @@ export class StudentService {
                     expectedSalaryMax,
                     canTakeApprenticeship,
                     monthsOfCommercialExp,
+                }).andWhere(searchTerm.length === 0 ? 'hrId = :hr ' : '(MATCH(targetWorkCity) AGAINST (":searchTerm*" IN BOOLEAN MODE) OR MATCH(expectedTypeWork) AGAINST (":searchTerm*" IN BOOLEAN MODE) OR MATCH(expectedContractType) AGAINST (":searchTerm*" IN BOOLEAN MODE)OR MATCH(firstName) AGAINST (":searchTerm*" IN BOOLEAN MODE) OR MATCH(lastName) AGAINST (":searchTerm*" IN BOOLEAN MODE))', {
+                    hr: user.hr.id,
+                    searchTerm,
                 })
                 .skip(pageSize * (currentPage - 1))
                 .take(pageSize)

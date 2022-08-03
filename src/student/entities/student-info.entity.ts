@@ -115,6 +115,7 @@ export class StudentInfo extends BaseEntity implements StudentInfoInterface {
     })
     targetWorkCity: string;
 
+    @Index({ fulltext: true })
     @Column({
         type: 'varchar',
         length: 20,
@@ -122,7 +123,6 @@ export class StudentInfo extends BaseEntity implements StudentInfoInterface {
     })
     expectedContractType: ExpectedContractType;
 
-    @Index({ fulltext: true })
     @Column({
         length: 8,
         default: '0',
