@@ -138,12 +138,12 @@ export class StudentService {
             const expectedSalaryMax = '10000';
             const canTakeApprenticeship = 'Nie';
             const monthsOfCommercialExp = 0;
-            const searchTerm = 'b2b kraków';
+            const searchTerm = 'b2b kraków'.replace(/([A-Z0-9])\w+/g,'');
 
             const [students, count] = await dataSource
                 .getRepository(StudentInfo)
                 .createQueryBuilder()
-                .where('status = :status AND courseCompletion >= :courseCompletion AND courseEngagment >= :courseEngagment AND projectDegree >= :projectDegree AND teamProjectDegree >= :teamProjectDegree AND (expectedTypeWork = :expectedTypeWork OR expectedTypeWork = "Bez znaczenia") AND (expectedContractType = :expectedContractType OR expectedContractType = "Bez znaczenia") AND (expectedSalary BETWEEN :expectedSalaryMin AND :expectedSalaryMax OR expectedSalary IS null) AND canTakeApprenticeship = :canTakeApprenticeship AND monthsOfCommercialExp >= :monthsOfCommercialExp', {
+                .where('status = :status AND courseCompletion >= :courseCompletion AND courseEngagment >= :courseEngagment AND projectDegree >= :projectDegree AND teamProjectDegree >= :teamProjectDegree AND (expectedTypeWork = :expectedTypeWork OR expectedTypeWork = "Bez znaczenia") AND (expectedContractType = :expectedContractType OR expectedContractType = "Bez znaczenia") AND (expectedSalary BETWEEN :expectedSalaryMin AND :expectedSalaryMax OR expectedSalary IS null) AND (canTakeApprenticeship = :canTakeApprenticeship OR canTakeApprenticeship = "Tak") AND monthsOfCommercialExp >= :monthsOfCommercialExp', {
                     status: StudentStatus.ACCESSIBLE,
                     courseCompletion,
                     courseEngagment,
