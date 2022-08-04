@@ -25,7 +25,7 @@ export class UserController {
         @Inject(UserService) private userService: UserService,
     ) {}
 
-    @Patch(`/activate`)
+    @Patch('/activate')
     activeUser(
         @Body() active: ActivateUserRequest,
     ): Promise<ActivateUserResponse> {
@@ -33,7 +33,7 @@ export class UserController {
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Patch(`/edit`)
+    @Patch('/edit')
     editPassword(
         @UserObj() user: User,
         @Body() password: EditPasswordRequest,
@@ -41,7 +41,7 @@ export class UserController {
         return this.userService.editPassword(password, user);
     }
 
-    @Post(`/recover`)
+    @Post('/recover')
     recoverPassword(
         @Body() recover: RecoverPasswordRequest,
     ): Promise<RecoverPasswordResponse> {
