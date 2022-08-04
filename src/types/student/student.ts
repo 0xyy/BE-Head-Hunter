@@ -75,17 +75,18 @@ export enum StudentStatus {
 }
 
 export enum ExpectedTypeWork {
-    ALL,
-    REMOTE,
-    STATIONARY,
-    HYBRID,
+    ALL = 'Bez znaczenia',
+    REMOTE = 'Praca zdalna',
+    STATIONARY = 'Praca w biurze',
+    HYBRID = 'Hybrydowa',
 }
 
 export enum ExpectedContractType {
-    NOPREFERENCE,
-    UOP,
-    B2B,
-    UZUOD,
+    NOPREFERENCE = 'Bez znaczenia',
+    UOP = 'Umowa o prace',
+    B2B = 'B2B',
+    UZ = 'Umowa zlecenie',
+    UOD = 'Umowa o dzieło',
 }
 
 export type StudentResponse = {

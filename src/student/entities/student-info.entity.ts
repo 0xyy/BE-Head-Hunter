@@ -1,7 +1,7 @@
 import {
     BaseEntity,
     Column,
-    Entity,
+    Entity, Index,
     JoinColumn,
     ManyToOne,
     OneToMany,
@@ -59,11 +59,13 @@ export class StudentInfo extends BaseEntity implements StudentInfoInterface {
     })
     tel: string;
 
+    @Index({ fulltext: true })
     @Column({
         length: 60,
     })
     firstName: string;
 
+    @Index({ fulltext: true })
     @Column({
         length: 100,
     })
@@ -98,26 +100,32 @@ export class StudentInfo extends BaseEntity implements StudentInfoInterface {
     })
     avatarUrl: string | null;
 
+    @Index({ fulltext: true })
     @Column({
-        type: 'tinyint',
-        default: 0,
+        type: 'varchar',
+        length: 20,
+        default: ExpectedTypeWork.ALL,
     })
     expectedTypeWork: ExpectedTypeWork;
 
+    @Index({ fulltext: true })
     @Column({
         length: 100,
         nullable: true,
     })
     targetWorkCity: string;
 
+    @Index({ fulltext: true })
     @Column({
-        type: 'tinyint',
-        default: 0,
+        type: 'varchar',
+        length: 20,
+        default: ExpectedContractType.NOPREFERENCE,
     })
     expectedContractType: ExpectedContractType;
 
     @Column({
         length: 8,
+        default: '0',
         nullable: true,
     })
     expectedSalary: string;
