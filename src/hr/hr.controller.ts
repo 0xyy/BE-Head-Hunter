@@ -32,7 +32,7 @@ export class HrController {
         return this.studentService.findAllActiveStudents(currentPage || 1, pageSize || 10);
     }
 
-    @Get('interview/')
+    @Get('/interview')
     @Roles(UserRole.HR)
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     findAllToInterview(
@@ -43,7 +43,7 @@ export class HrController {
         return this.studentService.findAllToInterview(currentPage || 1, pageSize || 10, user);
     }
 
-    @Get('cv/:id')
+    @Get('/cv/:id')
     @Roles(UserRole.HR)
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     showStudentCv(
@@ -52,7 +52,7 @@ export class HrController {
         return this.studentService.findOneCV(id);
     }
 
-    @Patch('reservation')
+    @Patch('/reservation')
     @Roles(UserRole.HR)
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     reservation(
