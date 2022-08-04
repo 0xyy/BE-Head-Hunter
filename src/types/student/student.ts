@@ -94,28 +94,45 @@ export type StudentResponse = {
     isSuccess: true;
 };
 
-export type ActiveStudentsResponse =
-    {
-        isSuccess: true;
-        pageCount: number;
-        students: StudentAvailabilityViewInterface[];
-    };
-export type StudentsToInterviewResponse =
-    {
-        isSuccess: true;
-        pageCount: number;
-        students: StudentsToInterviewInterface[];
-    };
+export type ActiveStudentsResponse = {
+    isSuccess: true;
+    pageCount: number;
+    students: StudentAvailabilityViewInterface[];
+};
 
-export type StudentInfoUpdateResponse =
-    | {
+export type StudentsToInterviewResponse = {
+    isSuccess: true;
+    pageCount: number;
+    students: StudentsToInterviewInterface[];
+};
+
+export type StudentInfoUpdateResponse = {
     studentInfoId: string;
     isSuccess: true;
 } | {
     message: string;
     isSuccess: false;
 };
+
 export type ReservationStudentResponse = {
     isSuccess: boolean;
-    message: string
-}
+    message: string;
+};
+
+export type DeactivationStudentResponse = {
+    isSuccess: boolean;
+};
+
+export type HiredStudentResponse = {
+    isSuccess: false;
+    message: string;
+} | {
+    isSuccess: boolean;
+};
+
+export type DisinterestStudentResponse = {
+    isSuccess: false;
+    message: string;
+} | {
+    isSuccess: boolean;
+};
