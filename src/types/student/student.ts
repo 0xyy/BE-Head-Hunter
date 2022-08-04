@@ -98,12 +98,14 @@ export type ActiveStudentsResponse = {
     isSuccess: true;
     pageCount: number;
     students: StudentAvailabilityViewInterface[];
+    studentsCount: number;
 };
 
 export type StudentsToInterviewResponse = {
     isSuccess: true;
     pageCount: number;
     students: StudentsToInterviewInterface[];
+    studentsCount: number;
 };
 
 export type StudentInfoUpdateResponse = {

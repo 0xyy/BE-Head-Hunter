@@ -172,6 +172,7 @@ export class StudentService {
                 isSuccess: true,
                 pageCount,
                 students: this.filterAvailabilityStudent(students),
+                studentsCount: count,
             };
         } catch (e) {
             throw new Error(e.message);
@@ -223,6 +224,7 @@ export class StudentService {
             return {
                 isSuccess: true,
                 pageCount,
+                studentsCount: count,
                 students: this.filterStudentsToInterview(students),
             };
         } catch (e) {
