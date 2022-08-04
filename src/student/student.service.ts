@@ -143,7 +143,7 @@ export class StudentService {
             const expectedSalaryMax = '10000';
             const canTakeApprenticeship = 'Nie';
             const monthsOfCommercialExp = 0;
-            const searchTerm = 'b2b kraków'.replace(/([A-Z0-9])\w+/g,'');
+            const searchTerm = 'b2b kraków'.replace(/([A-Z0-9])\w+/g, '');
 
             const [students, count] = await dataSource
                 .getRepository(StudentInfo)
@@ -194,12 +194,12 @@ export class StudentService {
             const expectedSalaryMax = '10000';
             const canTakeApprenticeship = 'Nie';
             const monthsOfCommercialExp = 0;
-            const searchTerm = 'Kuba';
+            const searchTerm = 'b2b kraków'.replace(/([A-Z0-9])\w+/g, '');
 
             const [students, count] = await dataSource
                 .getRepository(StudentInfo)
                 .createQueryBuilder()
-                .where('hrId = :hr AND courseCompletion >= :courseCompletion AND courseEngagment >= :courseEngagment AND projectDegree >= :projectDegree AND teamProjectDegree >= :teamProjectDegree AND (expectedTypeWork = :expectedTypeWork OR expectedTypeWork = "Bez znaczenia") AND (expectedContractType = :expectedContractType OR expectedContractType = "Bez znaczenia") AND (expectedSalary BETWEEN :expectedSalaryMin AND :expectedSalaryMax OR expectedSalary IS null) AND canTakeApprenticeship = :canTakeApprenticeship AND monthsOfCommercialExp >= :monthsOfCommercialExp', {
+                .where('hrId = :hr AND courseCompletion >= :courseCompletion AND courseEngagment >= :courseEngagment AND projectDegree >= :projectDegree AND teamProjectDegree >= :teamProjectDegree AND (expectedTypeWork = :expectedTypeWork OR expectedTypeWork = "Bez znaczenia") AND (expectedContractType = :expectedContractType OR expectedContractType = "Bez znaczenia") AND (expectedSalary BETWEEN :expectedSalaryMin AND :expectedSalaryMax OR expectedSalary IS null) AND (canTakeApprenticeship = :canTakeApprenticeship OR canTakeApprenticeship = "Tak") AND monthsOfCommercialExp >= :monthsOfCommercialExp', {
                     hr: user.hr.id,
                     courseCompletion,
                     courseEngagment,
@@ -398,7 +398,7 @@ export class StudentService {
             return {
                 isSuccess: false,
                 message: 'Kursant nie jest w procesie o zatrudnienie.',
-            }
+            };
         }
 
         const { affected } = await StudentInfo.update(
