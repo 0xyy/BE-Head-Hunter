@@ -13,6 +13,7 @@ import { RolesGuard } from '../guards/roles.guard';
 import { UserObj } from '../decorators/user-obj.decorator';
 import { User } from '../user/user.entity';
 import { ReservationStudentDto } from '../student/dto/reservation-student.dto';
+import { AllActiveStudentsDto } from '../student/dto/all-active-students.dto';
 
 @Controller('/hr')
 export class HrController {
@@ -26,21 +27,19 @@ export class HrController {
     @Roles(UserRole.HR)
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     AllActiveStudents(
-        @Query('currentPage') currentPage: number,
-        @Query('pageSize') pageSize: number,
+        @Query() query: AllActiveStudentsDto,
     ): Promise<ActiveStudentsResponse> {
-        return this.studentService.findAllActiveStudents(currentPage || 1, pageSize || 10);
+        return this.studentService.findAllActiveStudents(query);
     }
 
     @Get('/interview')
     @Roles(UserRole.HR)
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     findAllToInterview(
-        @Query('currentPage') currentPage: number,
-        @Query('pageSize') pageSize: number,
+        @Query() query: AllActiveStudentsDto,
         @UserObj() user: User,
     ): Promise<StudentsToInterviewResponse> {
-        return this.studentService.findAllToInterview(currentPage || 1, pageSize || 10, user);
+        return this.studentService.findAllToInterview(query, user);
     }
 
     @Get('/cv/:id')

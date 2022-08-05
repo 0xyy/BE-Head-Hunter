@@ -11,8 +11,6 @@ import { DisinterestStudentDto } from './dto/disinterest-student.dto';
 import { StudentDto } from './dto/student.dto';
 import {
     ActiveStudentsResponse, DisinterestStudentResponse,
-    ExpectedTypeWork,
-    ExpectedContractType,
     HiredStudentResponse,
     ReservationStudentResponse,
     StudentAvailabilityViewInterface,
@@ -23,6 +21,7 @@ import {
     StudentsToInterviewResponse,
     UserRole,
 } from '../types';
+import { AllActiveStudentsDto } from './dto/all-active-students.dto';
 
 @Injectable()
 export class StudentService {
@@ -129,38 +128,48 @@ export class StudentService {
     };
 
     async findAllActiveStudents(
-        currentPage: number,
-        pageSize: number,
+        query: AllActiveStudentsDto,
     ): Promise<ActiveStudentsResponse> {
         try {
-            const courseCompletion = 1;
-            const courseEngagment = 1;
-            const projectDegree = 5;
-            const teamProjectDegree = 1;
-            const expectedTypeWork = ExpectedTypeWork.HYBRID;
-            const expectedContractType = ExpectedContractType.B2B;
-            const expectedSalaryMin = '0';
-            const expectedSalaryMax = '10000';
-            const canTakeApprenticeship = 'Nie';
-            const monthsOfCommercialExp = 0;
-            const searchTerm = 'b2b kraków'.replace(/([A-Z0-9])\w+/g, '');
+            const {
+                pageSize,
+                currentPage,
+                courseCompletion,
+                courseEngagment,
+                projectDegree,
+                teamProjectDegree,
+                expectedTypeWork,
+                expectedContractType,
+                canTakeApprenticeship,
+                monthsOfCommercialExp,
+            } = query;
+            const searchTerm = query.search.replace(/[^\w\d żółćśźęąń]/gi, '');
+            const expectedSalaryMin = query.expectedSalaryMin.length === 0 ? '0' : query.expectedSalaryMin;
+            const expectedSalaryMax = query.expectedSalaryMax.length === 0 ? '99999999' : query.expectedSalaryMax;
 
             const [students, count] = await dataSource
                 .getRepository(StudentInfo)
                 .createQueryBuilder()
-                .where('status = :status AND courseCompletion >= :courseCompletion AND courseEngagment >= :courseEngagment AND projectDegree >= :projectDegree AND teamProjectDegree >= :teamProjectDegree AND (expectedTypeWork = :expectedTypeWork OR expectedTypeWork = "Bez znaczenia") AND (expectedContractType = :expectedContractType OR expectedContractType = "Bez znaczenia") AND (expectedSalary BETWEEN :expectedSalaryMin AND :expectedSalaryMax OR expectedSalary IS null) AND (canTakeApprenticeship = :canTakeApprenticeship OR canTakeApprenticeship = "Tak") AND monthsOfCommercialExp >= :monthsOfCommercialExp', {
+                .where('status = :status AND courseCompletion >= :courseCompletion AND courseEngagment >= :courseEngagment AND projectDegree >= :projectDegree AND teamProjectDegree >= :teamProjectDegree AND (canTakeApprenticeship = :canTakeApprenticeship OR canTakeApprenticeship = "Tak") AND monthsOfCommercialExp >= :monthsOfCommercialExp AND (expectedSalary BETWEEN :expectedSalaryMin AND :expectedSalaryMax OR expectedSalary IS null)', {
                     status: StudentStatus.ACCESSIBLE,
                     courseCompletion,
                     courseEngagment,
                     projectDegree,
                     teamProjectDegree,
-                    expectedTypeWork,
-                    expectedContractType,
-                    expectedSalaryMin,
-                    expectedSalaryMax,
                     canTakeApprenticeship,
                     monthsOfCommercialExp,
-                }).andWhere(searchTerm.length === 0 ? 'status = :status' : '(MATCH(targetWorkCity) AGAINST (":searchTerm*" IN BOOLEAN MODE) OR MATCH(expectedTypeWork) AGAINST (":searchTerm*" IN BOOLEAN MODE) OR MATCH(expectedContractType) AGAINST (":searchTerm*" IN BOOLEAN MODE))', {
+                    expectedSalaryMin,
+                    expectedSalaryMax,
+                })
+                .andWhere(!expectedContractType[0] ? 'status = :status' : '(expectedContractType IN (:expectedContractType) OR expectedContractType = "Bez znaczenia")', {
+                    status: StudentStatus.ACCESSIBLE,
+                    expectedContractType,
+                })
+                .andWhere((!expectedTypeWork[0]) ? 'status = :status' : '(expectedTypeWork IN (:expectedTypeWork) OR expectedTypeWork = "Bez znaczenia")', {
+                    status: StudentStatus.ACCESSIBLE,
+                    expectedTypeWork,
+                })
+                .andWhere(searchTerm.length === 0 ? 'status = :status' : '(MATCH(targetWorkCity) AGAINST (":searchTerm*" IN BOOLEAN MODE) OR MATCH(expectedTypeWork) AGAINST (":searchTerm*" IN BOOLEAN MODE) OR MATCH(expectedContractType) AGAINST (":searchTerm*" IN BOOLEAN MODE))', {
                     status: StudentStatus.ACCESSIBLE,
                     searchTerm,
                 })
@@ -180,38 +189,47 @@ export class StudentService {
     }
 
     async findAllToInterview(
-        currentPage: number,
-        pageSize: number,
+        query: AllActiveStudentsDto,
         user: User,
     ): Promise<StudentsToInterviewResponse> {
         try {
-            const courseCompletion = 1;
-            const courseEngagment = 1;
-            const projectDegree = 5;
-            const teamProjectDegree = 1;
-            const expectedTypeWork = ExpectedTypeWork.HYBRID;
-            const expectedContractType = ExpectedContractType.B2B;
-            const expectedSalaryMin = '0';
-            const expectedSalaryMax = '10000';
-            const canTakeApprenticeship = 'Nie';
-            const monthsOfCommercialExp = 0;
-            const searchTerm = 'b2b kraków'.replace(/([A-Z0-9])\w+/g, '');
+            const {
+                pageSize,
+                currentPage,
+                courseCompletion,
+                courseEngagment,
+                projectDegree,
+                teamProjectDegree,
+                expectedTypeWork,
+                expectedContractType,
+                canTakeApprenticeship,
+                monthsOfCommercialExp,
+            } = query;
+            const searchTerm = query.search.replace(/[^\w\d żółćśźęąń]/gi, '');
+            const expectedSalaryMin = query.expectedSalaryMin.length === 0 ? '0' : query.expectedSalaryMin;
+            const expectedSalaryMax = query.expectedSalaryMax.length === 0 ? '99999999' : query.expectedSalaryMax;
 
             const [students, count] = await dataSource
                 .getRepository(StudentInfo)
                 .createQueryBuilder()
-                .where('hrId = :hr AND courseCompletion >= :courseCompletion AND courseEngagment >= :courseEngagment AND projectDegree >= :projectDegree AND teamProjectDegree >= :teamProjectDegree AND (expectedTypeWork = :expectedTypeWork OR expectedTypeWork = "Bez znaczenia") AND (expectedContractType = :expectedContractType OR expectedContractType = "Bez znaczenia") AND (expectedSalary BETWEEN :expectedSalaryMin AND :expectedSalaryMax OR expectedSalary IS null) AND (canTakeApprenticeship = :canTakeApprenticeship OR canTakeApprenticeship = "Tak") AND monthsOfCommercialExp >= :monthsOfCommercialExp', {
+                .where('hrId = :hr AND courseCompletion >= :courseCompletion AND courseEngagment >= :courseEngagment AND projectDegree >= :projectDegree AND teamProjectDegree >= :teamProjectDegree AND (canTakeApprenticeship = :canTakeApprenticeship OR canTakeApprenticeship = "Tak") AND monthsOfCommercialExp >= :monthsOfCommercialExp AND (expectedSalary BETWEEN :expectedSalaryMin AND :expectedSalaryMax OR expectedSalary IS null)', {
                     hr: user.hr.id,
                     courseCompletion,
                     courseEngagment,
                     projectDegree,
                     teamProjectDegree,
-                    expectedTypeWork,
-                    expectedContractType,
-                    expectedSalaryMin,
-                    expectedSalaryMax,
                     canTakeApprenticeship,
                     monthsOfCommercialExp,
+                    expectedSalaryMin,
+                    expectedSalaryMax,
+                })
+                .andWhere(!expectedContractType[0] ? 'hrId = :hr' : '(expectedContractType IN (:expectedContractType) OR expectedContractType = "Bez znaczenia")', {
+                    hr: user.hr.id,
+                    expectedContractType,
+                })
+                .andWhere(!expectedTypeWork[0] ? 'hrId = :hr' : '(expectedTypeWork IN (:expectedTypeWork) OR expectedTypeWork = "Bez znaczenia" )', {
+                    hr: user.hr.id,
+                    expectedTypeWork,
                 }).andWhere(searchTerm.length === 0 ? 'hrId = :hr ' : '(MATCH(targetWorkCity) AGAINST (":searchTerm*" IN BOOLEAN MODE) OR MATCH(expectedTypeWork) AGAINST (":searchTerm*" IN BOOLEAN MODE) OR MATCH(expectedContractType) AGAINST (":searchTerm*" IN BOOLEAN MODE)OR MATCH(firstName) AGAINST (":searchTerm*" IN BOOLEAN MODE) OR MATCH(lastName) AGAINST (":searchTerm*" IN BOOLEAN MODE))', {
                     hr: user.hr.id,
                     searchTerm,
