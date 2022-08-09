@@ -15,10 +15,6 @@ import {
 } from '../../types';
 
 export class StudentDto {
-    @IsString()
-    @IsNotEmpty()
-    userId: string;
-
     // @IsString()
     // @ValidateIf((object, value) => value !== null)
     // studentInfoId: string | null;
