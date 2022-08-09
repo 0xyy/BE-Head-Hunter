@@ -21,7 +21,7 @@ import { AppService } from './app.service';
         StudentModule,
         ThrottlerModule.forRoot({
             ttl: 60,
-            limit: 10,
+            limit: 100,
         }),
         ConfigModule.forRoot({
             isGlobal: true,

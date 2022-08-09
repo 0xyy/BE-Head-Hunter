@@ -292,7 +292,7 @@ export class StudentService {
             const checkGithub = await StudentInfo.findOne({
                 where: { githubUsername: studentInfo.githubUsername },
             });
-            if (!!checkGithub) {
+            if (!!checkGithub && checkGithub.id !== user.studentInfo.id) {
                 return {
                     message: 'Konto o takiej nazwie użytkownika Github jest juz zarejestrowane.',
                     isSuccess: false,

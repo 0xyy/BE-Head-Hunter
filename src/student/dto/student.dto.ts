@@ -5,8 +5,8 @@ import {
     IsOptional,
     IsString,
     Max,
-    MaxLength,
-    MinLength
+    MaxLength, Min,
+    MinLength,
 } from 'class-validator';
 import {
     ExpectedContractType,
@@ -60,13 +60,11 @@ export class StudentDto {
     @IsOptional()
     targetWorkCity?: string;
 
-    @IsNumber()
-    @Max(3)
+    @IsString()
     @IsNotEmpty()
     expectedTypeWork: ExpectedTypeWork;
 
-    @IsNumber()
-    @Max(3)
+    @IsString()
     @IsNotEmpty()
     expectedContractType: ExpectedContractType;
 
@@ -78,9 +76,9 @@ export class StudentDto {
     @IsOptional()
     expectedSalary?: string;
 
-    @IsBoolean()
+    @IsString()
     @IsNotEmpty()
-    canTakeApprenticeship: boolean;
+    canTakeApprenticeship: string;
 
     @IsNumber()
     @IsNotEmpty()
