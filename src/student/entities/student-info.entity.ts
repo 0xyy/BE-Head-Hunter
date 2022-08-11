@@ -1,12 +1,12 @@
 import {
     BaseEntity,
     Column,
-    Entity,
+    Entity, Index,
     JoinColumn,
     ManyToOne,
     OneToMany,
     OneToOne,
-    PrimaryGeneratedColumn
+    PrimaryGeneratedColumn,
 } from 'typeorm';
 import { StudentPortfolioUrl } from './student-portfolio-url.entity';
 import { StudentProjectUrl } from './student-project-url.entity';
@@ -21,7 +21,7 @@ import {
     StudentPortfolioUrlInterface,
     StudentProjectUrlInterface,
     StudentStatus,
-    UserInterface
+    UserInterface,
 } from '../../types';
 
 @Entity()
@@ -59,11 +59,13 @@ export class StudentInfo extends BaseEntity implements StudentInfoInterface {
     })
     tel: string;
 
+    @Index({ fulltext: true })
     @Column({
         length: 60,
     })
     firstName: string;
 
+    @Index({ fulltext: true })
     @Column({
         length: 100,
     })
@@ -98,34 +100,41 @@ export class StudentInfo extends BaseEntity implements StudentInfoInterface {
     })
     avatarUrl: string | null;
 
+    @Index({ fulltext: true })
     @Column({
-        type: 'tinyint',
-        default: 0,
+        type: 'varchar',
+        length: 20,
+        default: ExpectedTypeWork.ALL,
     })
     expectedTypeWork: ExpectedTypeWork;
 
+    @Index({ fulltext: true })
     @Column({
         length: 100,
         nullable: true,
     })
     targetWorkCity: string;
 
+    @Index({ fulltext: true })
     @Column({
-        type: 'tinyint',
-        default: 0,
+        type: 'varchar',
+        length: 20,
+        default: ExpectedContractType.NOPREFERENCE,
     })
     expectedContractType: ExpectedContractType;
 
     @Column({
         length: 8,
+        default: '0',
         nullable: true,
     })
     expectedSalary: string;
 
     @Column({
-        default: false,
+        length: 3,
+        default: 'Nie',
     })
-    canTakeApprenticeship: boolean;
+    canTakeApprenticeship: 'Tak' | 'Nie';
 
     @Column({
         type: 'tinyint',
@@ -169,4 +178,12 @@ export class StudentInfo extends BaseEntity implements StudentInfoInterface {
 
     @JoinColumn()
     hr: Hr;
+
+    @Column(
+        {
+            nullable: true,
+            default: null,
+        },
+    )
+    reservationTo: Date;
 }

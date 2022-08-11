@@ -21,9 +21,10 @@ async function bootstrap() {
             disableErrorMessages: true,
             whitelist: true,
             forbidNonWhitelisted: true,
+            transformOptions: { enableImplicitConversion: true },
             transform: true,
             exceptionFactory: (errors: ValidationError[]) => {
-                return new BadRequestException(`Błąd walidacji.`);
+                return new BadRequestException('Błąd walidacji.');
             },
         }),
     );

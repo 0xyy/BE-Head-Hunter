@@ -1,69 +1,47 @@
-import { Controller, Get, Body, Patch, Param, Query } from '@nestjs/common';
+import { Controller, Body, Patch } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { StudentDto } from './dto/student.dto';
 import { DeactivationStudentDto } from './dto/deactivation-student.dto';
-import { ReservationStudentDto } from './dto/reservation-student.dto';
+import { DisinterestStudentDto } from './dto/disinterest-student.dto';
+import { HiredStudentDto } from './dto/hired-student.dto';
 import {
-    ActiveStudentsResponse,
-    StudentCvProfilResponse,
-    StudentForInterviewResponse,
-    StudentResponse
+    DeactivationStudentResponse,
+    DisinterestStudentResponse,
+    HiredStudentResponse, StudentInfoUpdateResponse,
 } from '../types';
 
 @Controller('student')
 export class StudentController {
     constructor(
         private readonly studentService: StudentService,
-    ) {}
-
-    @Get()
-    AllActiveStudents(
-        @Query('currentPage') currentPage: number,
-        @Query('pageSize') pageSize: number,
-        // @Query('pageCount') pageCount: number,
-    ): Promise<ActiveStudentsResponse> {
-        return this.studentService.findAllActiveStudents(currentPage || 0, 1);
+    ) {
     }
 
-    @Get(':id')
-    findOne(
-        @Param('id') id: string,
-    ): StudentResponse {
-        return this.studentService.findOne(id);
-    }
-
-    @Get('interview/:hrId')
-    findAllForInterview(
-        @Param('hrId') hrId: string,
-    ): StudentForInterviewResponse {
-        return this.studentService.findAllForInterview(hrId);
-    }
-
-    @Get('cv/:id')
-    findOneCV(
-        @Param('id') id: string,
-    ): StudentCvProfilResponse {
-        return this.studentService.findOneCV(id);
-    }
-
-    @Patch('update')
+    @Patch('/update')
     update(
-        @Body() StudentDto: StudentDto,
-    ) {
-        return this.studentService.update(StudentDto);
+        @Body() studentDto: StudentDto,
+    ): Promise<StudentInfoUpdateResponse> {
+        return this.studentService.update(studentDto);
     }
 
-    @Patch('reservation')
-    reservation(
-        @Body() ReservationStudentDto: ReservationStudentDto,
-    ) {
-        return this.studentService.reservation(ReservationStudentDto);
-    }
-
-    @Patch('deactivation')
+    @Patch('/deactivation')
     deactivation(
-        @Body() DeactivationStudentDto: DeactivationStudentDto,
-    ) {
-        return this.studentService.deactivation(DeactivationStudentDto);
+        @Body() deactivationStudentDto: DeactivationStudentDto,
+    ): Promise<DeactivationStudentResponse> {
+        return this.studentService.deactivation(deactivationStudentDto);
+    }
+
+    @Patch('/hired')
+    hired(
+        @Body() hiredStudentDto: HiredStudentDto,
+    ): Promise<HiredStudentResponse> {
+        return this.studentService.hired(hiredStudentDto);
+    }
+
+    @Patch('/disinterest')
+    disinterest(
+        @Body() disinterestStudentDto: DisinterestStudentDto,
+    ): Promise<DisinterestStudentResponse> {
+        return this.studentService.disinterest(disinterestStudentDto);
     }
 }
