@@ -31,17 +31,6 @@ export class StudentService {
     ) {
     }
 
-    private async getUser(id: string): Promise<User> {
-        try {
-            return await User.findOneOrFail({
-                where: { id },
-                relations: ['StudentInfo'],
-            });
-        } catch (e) {
-            throw new BadRequestException('Nie ma takiego kursanta.');
-        }
-    }
-
     private async getStudent(id: string): Promise<StudentInfo> {
         try {
             return await StudentInfo.findOneOrFail({
@@ -285,19 +274,12 @@ export class StudentService {
         }
     }
 
-    async update(studentInfo: StudentDto): Promise<StudentInfoUpdateResponse> {
+    async update(user ,studentInfo: StudentDto): Promise<StudentInfoUpdateResponse> {
         try {
-            const user = await this.getUser(studentInfo.userId);
             const avatarUrl = await this.findGithubAvatar(studentInfo.githubUsername);
             if (!avatarUrl.isSuccess) {
                 return {
                     message: 'Nie znaleziono konta github.',
-                    isSuccess: false,
-                };
-            }
-            if (!user) {
-                return {
-                    message: 'Nie znaleziono użytkownika.',
                     isSuccess: false,
                 };
             }
@@ -310,7 +292,7 @@ export class StudentService {
             const checkGithub = await StudentInfo.findOne({
                 where: { githubUsername: studentInfo.githubUsername },
             });
-            if (!!checkGithub) {
+            if (!!checkGithub && checkGithub.id !== user.studentInfo.id) {
                 return {
                     message: 'Konto o takiej nazwie użytkownika Github jest juz zarejestrowane.',
                     isSuccess: false,
