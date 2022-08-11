@@ -99,10 +99,11 @@ export class AdminService {
             }
 
             try {
-                const response = await this.adminStudentService.insertStudent(user);
+                const token = this.authService.createToken(uuid());
+                const response = await this.adminStudentService.insertStudent({ ...user, token: token.accessToken });
 
                 if (response.isSuccess) {
-                    const token = this.authService.createToken(uuid());
+
                     await this.mailService.sendMail(
                         user.email,
                         'rejestracja użytkownika',
