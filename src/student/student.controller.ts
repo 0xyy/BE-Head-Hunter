@@ -30,6 +30,8 @@ export class StudentController {
     }
 
     @Patch('/deactivation')
+    @Roles(UserRole.STUDENT)
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
     deactivation(
         @Body() deactivationStudentDto: DeactivationStudentDto,
     ): Promise<DeactivationStudentResponse> {
