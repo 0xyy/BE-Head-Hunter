@@ -5,47 +5,51 @@ import {
     JoinColumn,
     OneToMany,
     OneToOne,
-    PrimaryGeneratedColumn
+    PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../../user/user.entity';
-import { StudentInfo } from '../../student/entities/student-info.entity';
-import { StudentProjectUrlInterface, UserInterface } from '../../types';
+import {
+    HrInterface,
+    HrToStudentInterface,
+    UserInterface,
+} from '../../types';
+import { HrToStudentEntity } from './hr-to.student.entity';
 
 @Entity()
-export class Hr extends BaseEntity {
+export class Hr extends BaseEntity implements HrInterface {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
     @Column({
         type: 'varchar',
         length: 255,
-        nullable: false
+        nullable: false,
     })
     fullName: string;
 
     @Column({
         type: 'varchar',
         length: 255,
-        nullable: false
+        nullable: false,
     })
     company: string;
 
     @Column({
         type: 'int',
         width: 3,
-        nullable: false
+        nullable: false,
     })
     maxReservedStudents: number;
 
-    @OneToMany((type) => StudentInfo, (entity) => entity.hr)
-    studentsToInterview: StudentProjectUrlInterface[];
+    @OneToMany((type) => HrToStudentEntity, (entity) => entity.hr, {
+        onDelete: 'CASCADE',
+    })
+    @JoinColumn()
+    studentsToInterview: HrToStudentInterface[];
 
     @OneToOne((type) => User, {
-        onDelete: 'CASCADE'
+        onDelete: 'CASCADE',
     })
     @JoinColumn()
     user: UserInterface;
-
-    // @AfterRemove()
-    // zmiana statusu rezerwacji usera
 }

@@ -27,7 +27,7 @@ export class HrService {
             await user.save();
         } catch (e) {
             throw e(
-                `Dodanie użytkownika hr do tabeli w bazie User "${hr.email}" nie powiodło się.`
+                `Dodanie użytkownika hr do tabeli w bazie User "${hr.email}" nie powiodło się.`,
             );
         }
 
@@ -42,7 +42,7 @@ export class HrService {
             await user.save();
         } catch (e) {
             throw e(
-                `Dodanie  użytkownika do tabeli w bazie Hr "${hr.email}" nie powiodło się.`
+                `Dodanie  użytkownika do tabeli w bazie Hr "${hr.email}" nie powiodło się.`,
             );
         }
 

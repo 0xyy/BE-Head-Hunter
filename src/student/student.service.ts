@@ -22,6 +22,7 @@ import {
     UserRole,
 } from '../types';
 import { AllActiveStudentsDto } from './dto/all-active-students.dto';
+import { HrToStudentEntity } from '../hr/entities/hr-to.student.entity';
 
 @Injectable()
 export class StudentService {
@@ -35,7 +36,7 @@ export class StudentService {
         try {
             return await StudentInfo.findOneOrFail({
                 where: { id },
-                relations: ['user'],
+                relations: ['user', 'hrs'],
             });
         } catch (e) {
             throw new BadRequestException('Nie ma takiego kursanta.');
@@ -94,7 +95,7 @@ export class StudentService {
                 canTakeApprenticeship,
                 monthsOfCommercialExp,
                 avatarUrl,
-                reservationTo,
+                // reservationTo,
             } = student;
             return {
                 studentId,
@@ -111,7 +112,7 @@ export class StudentService {
                 canTakeApprenticeship,
                 monthsOfCommercialExp,
                 avatarUrl,
-                reservationTo,
+                // reservationTo,
             };
         });
     };
@@ -274,7 +275,7 @@ export class StudentService {
         }
     }
 
-    async update(user ,studentInfo: StudentDto): Promise<StudentInfoUpdateResponse> {
+    async update(user, studentInfo: StudentDto): Promise<StudentInfoUpdateResponse> {
         try {
             const avatarUrl = await this.findGithubAvatar(studentInfo.githubUsername);
             if (!avatarUrl.isSuccess) {
@@ -319,6 +320,9 @@ export class StudentService {
 
     async reservation({ studentId }: ReservationStudentDto, user: User): Promise<ReservationStudentResponse> {
         const { hr } = user;
+        if (hr.studentsToInterview.some(ele => ele.studentId === studentId)) {
+            throw new BadRequestException('Student już jest dodany w "Do Rozmowy".');
+        }
         const student = await this.getStudent(studentId);
         const active = student.user.active;
         const { status } = student;
@@ -333,28 +337,19 @@ export class StudentService {
         ) {
             throw new BadRequestException('Kursant jest niedostępny.');
         }
-
-        const { affected } = await StudentInfo.update(
-            {
-                id: student.id,
-                status: StudentStatus.ACCESSIBLE,
-            },
-            {
-                status: StudentStatus.PENDING,
-                hr,
-                reservationTo: new Date(new Date().getTime() + (10 * 24 * 60 * 60 * 1000)),
-            },
-        );
-        if (affected === 0) {
-            return {
-                message: 'Nie udało się dodać kursanta "Do rozmowy"',
-                isSuccess: false,
-            };
-        } else {
+        try {
+            const hrToStudent = new HrToStudentEntity();
+            hrToStudent.hr = hr;
+            hrToStudent.student = student;
+            hrToStudent.reservationTo = new Date(new Date().getTime() + (10 * 24 * 60 * 60 * 1000));
+            await hrToStudent.save();
             return {
                 message: 'Dodano kursanta "Do rozmowy"',
                 isSuccess: true,
             };
+        } catch (e) {
+            throw new BadRequestException('Nie udało się dodać kursanta "Do rozmowy"');
+
         }
     }
 
@@ -419,11 +414,11 @@ export class StudentService {
                 `Kursant o e-mailu ${studentEmail} został pomyślnie zatrudniony.`,
             );
 
-            this.mailService.sendMail(
-                studentEmail,
-                'Zostałeś zatrudniony!',
-                `Gratulacje! Zostałeś zatrudniony w ${student.hr.company}`,
-            );
+            // this.mailService.sendMail(
+            //     studentEmail,
+            //     'Zostałeś zatrudniony!',
+            //     `Gratulacje! Zostałeś zatrudniony w ${student.hr.company}`,
+            // );
         }
     }
 
