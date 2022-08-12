@@ -380,7 +380,7 @@ export class StudentService {
         }
     }
 
-    async hired({ studentId }: HiredStudentDto): Promise<HiredStudentResponse> {
+    async hired({ hr }: User, { studentId }: HiredStudentDto): Promise<HiredStudentResponse> {
         const student = await this.getStudent(studentId);
 
         if (!student) {
@@ -413,11 +413,11 @@ export class StudentService {
                 `Kursant o e-mailu ${studentEmail} został pomyślnie zatrudniony.`,
             );
 
-            // this.mailService.sendMail(
-            //     studentEmail,
-            //     'Zostałeś zatrudniony!',
-            //     `Gratulacje! Zostałeś zatrudniony w ${student.hr.company}`,
-            // );
+            this.mailService.sendMail(
+                studentEmail,
+                'Zostałeś zatrudniony!',
+                `Gratulacje! Zostałeś zatrudniony w ${hr.company}`,
+            );
         }
     }
 
