@@ -180,7 +180,7 @@ export class StudentService {
     async findAllToInterview(
         query: AllActiveStudentsDto,
         user: User,
-    ): Promise<StudentsToInterviewResponse | any> {
+    ): Promise<StudentsToInterviewResponse> {
         try {
             const {
                 pageSize,
