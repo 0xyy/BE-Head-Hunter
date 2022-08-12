@@ -66,7 +66,7 @@ export interface StudentAvailabilityViewInterface {
 
 export interface StudentsToInterviewInterface extends StudentAvailabilityViewInterface {
     avatarUrl?: string;
-    // reservationTo: Date;
+    reservationTo: Date;
 }
 
 export enum StudentStatus {

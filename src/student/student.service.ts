@@ -11,7 +11,7 @@ import { DisinterestStudentDto } from './dto/disinterest-student.dto';
 import { StudentDto } from './dto/student.dto';
 import {
     ActiveStudentsResponse, DisinterestStudentResponse,
-    HiredStudentResponse,
+    HiredStudentResponse, HrToStudentInterface,
     ReservationStudentResponse,
     StudentAvailabilityViewInterface,
     StudentInfoInterface,
@@ -78,7 +78,7 @@ export class StudentService {
         });
     };
 
-    private filterStudentsToInterview = (students: StudentInfoInterface[]): StudentsToInterviewInterface[] => {
+    private filterStudentsToInterview = (students: HrToStudentInterface[]): StudentsToInterviewInterface[] => {
         return students.map(student => {
             const {
                 id: studentId,
@@ -95,8 +95,7 @@ export class StudentService {
                 canTakeApprenticeship,
                 monthsOfCommercialExp,
                 avatarUrl,
-                // reservationTo,
-            } = student;
+            } = student.student;
             return {
                 studentId,
                 firstName,
@@ -112,7 +111,7 @@ export class StudentService {
                 canTakeApprenticeship,
                 monthsOfCommercialExp,
                 avatarUrl,
-                // reservationTo,
+                reservationTo: student.reservationTo,
             };
         });
     };
@@ -181,7 +180,7 @@ export class StudentService {
     async findAllToInterview(
         query: AllActiveStudentsDto,
         user: User,
-    ): Promise<StudentsToInterviewResponse> {
+    ): Promise<StudentsToInterviewResponse | any> {
         try {
             const {
                 pageSize,
@@ -200,10 +199,11 @@ export class StudentService {
             const expectedSalaryMax = query.expectedSalaryMax.length === 0 ? '99999999' : query.expectedSalaryMax;
 
             const [students, count] = await dataSource
-                .getRepository(StudentInfo)
-                .createQueryBuilder()
-                .where('hrId = :hr AND courseCompletion >= :courseCompletion AND courseEngagment >= :courseEngagment AND projectDegree >= :projectDegree AND teamProjectDegree >= :teamProjectDegree AND (canTakeApprenticeship = :canTakeApprenticeship OR canTakeApprenticeship = "Tak") AND monthsOfCommercialExp >= :monthsOfCommercialExp AND (expectedSalary BETWEEN :expectedSalaryMin AND :expectedSalaryMax OR expectedSalary IS null)', {
-                    hr: user.hr.id,
+                .getRepository(HrToStudentEntity)
+                .createQueryBuilder('hrToStudentEntity')
+                .leftJoinAndSelect('hrToStudentEntity.student', 'studentInfo')
+                .where('hrId = :hrId AND courseCompletion >= :courseCompletion AND courseEngagment >= :courseEngagment AND projectDegree >= :projectDegree AND teamProjectDegree >= :teamProjectDegree AND (canTakeApprenticeship = :canTakeApprenticeship OR canTakeApprenticeship = "Tak") AND monthsOfCommercialExp >= :monthsOfCommercialExp AND (expectedSalary BETWEEN :expectedSalaryMin AND :expectedSalaryMax OR expectedSalary IS null)', {
+                    hrId: user.hr.id,
                     courseCompletion,
                     courseEngagment,
                     projectDegree,
@@ -326,7 +326,6 @@ export class StudentService {
         const student = await this.getStudent(studentId);
         const active = student.user.active;
         const { status } = student;
-
         const { maxReservedStudents } = hr;
         if (maxReservedStudents <= hr.studentsToInterview.length) {
             throw new BadRequestException('Nie możesz dodać więcej kursantów "Do Rozmowy.');

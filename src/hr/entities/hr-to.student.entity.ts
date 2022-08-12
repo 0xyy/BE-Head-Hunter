@@ -19,7 +19,7 @@ export class HrToStudentEntity extends BaseEntity {
     })
     hr: HrInterface;
 
-    @ManyToOne((type) => Hr, (entity) => entity.studentsToInterview, {
+    @ManyToOne((type) => StudentInfo, (entity) => entity.hrs, {
         onDelete: 'CASCADE',
     })
     student: StudentInfo;
