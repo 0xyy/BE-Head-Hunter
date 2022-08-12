@@ -5,35 +5,35 @@ import { StudentInfoInterface } from '../student';
 import { HrInterface } from '../hr';
 
 export interface UserInterface {
-  id: string;
-  email: string;
-  pwdHash: string;
-  salz: string;
-  currentTokenId: string | null;
-  activeTokenId: string | null;
-  active: boolean;
-  role: UserRole;
-  studentInfo: StudentInfoInterface;
-  hr: HrInterface;
+    id: string;
+    email: string;
+    pwdHash: string;
+    salz: string;
+    currentTokenId: string | null;
+    activeTokenId: string | null;
+    active: boolean;
+    role: UserRole;
+    studentInfo: StudentInfoInterface;
+    hr: HrInterface;
 }
 
 export type EditPasswordResponse = {
-  isSuccess: boolean;
+    isSuccess: boolean;
 };
 
 export type ActivateUserResponse = {
-  message: string;
-  isSuccess: boolean;
+    message: string;
+    isSuccess: boolean;
 };
 
 export type RecoverPasswordResponse = {
-  isSuccess: boolean;
+    isSuccess: boolean;
 };
 
 export enum UserRole {
-  ADMIN,
-  STUDENT,
-  HR,
+    ADMIN,
+    STUDENT,
+    HR,
 }
 
 export type ActivateUserRequest = ActivateUserDto;
