@@ -3,7 +3,6 @@ import {
     Column,
     Entity, Index,
     JoinColumn,
-    ManyToOne,
     OneToMany,
     OneToOne,
     PrimaryGeneratedColumn,
@@ -11,11 +10,11 @@ import {
 import { StudentPortfolioUrl } from './student-portfolio-url.entity';
 import { StudentProjectUrl } from './student-project-url.entity';
 import { User } from '../../user/user.entity';
-import { Hr } from '../../hr/entities/hr.entity';
 import { StudentBonusProjectUrl } from './student-bonus-project-url.entity';
 import {
     ExpectedContractType,
     ExpectedTypeWork,
+    HrToStudentInterface,
     StudentBonusProjectUrlInterface,
     StudentInfoInterface,
     StudentPortfolioUrlInterface,
@@ -23,6 +22,7 @@ import {
     StudentStatus,
     UserInterface,
 } from '../../types';
+import { HrToStudentEntity } from '../../hr/entities/hr-to.student.entity';
 
 @Entity()
 export class StudentInfo extends BaseEntity implements StudentInfoInterface {
@@ -172,18 +172,9 @@ export class StudentInfo extends BaseEntity implements StudentInfoInterface {
     @JoinColumn()
     user: UserInterface;
 
-    @ManyToOne((type) => Hr, (entity) => entity.studentsToInterview, {
+    @OneToMany((type) => HrToStudentEntity, (entity) => entity.student, {
         onDelete: 'CASCADE',
     })
-
     @JoinColumn()
-    hr: Hr;
-
-    @Column(
-        {
-            nullable: true,
-            default: null,
-        },
-    )
-    reservationTo: Date;
+    hrs: HrToStudentInterface[];
 }

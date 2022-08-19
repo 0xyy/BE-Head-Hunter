@@ -1,13 +1,22 @@
-import { StudentProjectUrlInterface } from '../student';
 import { UserInterface } from '../user';
+import { StudentInfoInterface } from '../student';
 
 export interface HrInterface {
     id: string;
     fullName: string;
     company: string;
     maxReservedStudents: number;
-    studentsToInterview: StudentProjectUrlInterface[];
+    studentsToInterview: HrToStudentInterface[];
     user: UserInterface;
+}
+
+export interface HrToStudentInterface {
+    id: string;
+    studentId: string;
+    hrId: string;
+    student: StudentInfoInterface;
+    hr: HrInterface;
+    reservationTo: Date;
 }
 
 export type AdminInsertHr = {
