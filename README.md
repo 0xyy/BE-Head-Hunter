@@ -1,48 +1,86 @@
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Installation
-you need to create a config-database.ts file in the config directory (src/config).
-and add the data to the database connection.
-```bash
-$ npm install
+# 🚀 HeadHunter - backend v0.1 
+
+## This is a final project of MegaK Course. The main goal of application is to help recruiters get employees from the database of the company which will be using it.
+
+
+
+
+## 🛠 Technologies used in this project:
+- TypeScript
+- NestJS
+- TypeORM
+
+## 🛠 Packages used in this project:
+- @nestjs-modules/mailer: "^1.7.1",
+- @nestjs/axios: "^0.1.0,
+- @nestjs/passport: "^9.0.0",
+- @nestjs/throttler: "^3.0.0",
+- @nestjs/typeorm: "^9.0.0",
+- axios: "^0.27.2",
+- class-transformer: "^0.5.1",
+- class-validator: "^0.13.2",
+- cookie-parser: "^1.4.6",
+- mime: "^3.0.0",
+- multer: "^1.4.5-lts.1",
+- mysql2: "^2.3.3",
+- nodemailer: "^6.7.7",
+- passport: "^0.6.0",
+- passport-jwt: "^4.0.0",
+- reflect-metadata: "^0.1.13",
+- rimraf: "^3.0.2",
+- rxjs: "^7.2.0",
+- typeorm: "^0.3.7",
+- uuid: "^8.3.2"
+
+## 🛠 Main API Reference
+## Auth EP
+#### User Login request into system
+
+```http
+  POST /auth/login
 ```
 
-## Running the app
+| Body | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `email`      | `string` | user email |
+| `pwd`      | `string` | user password  |
 
-```bash
-# development
-$ npm run start
 
-# watch mode
-$ npm run start:dev
+#### User logout request from the system
 
-# production mode
-$ npm run start:prod
+```http
+  GET /auth/logout
 ```
 
-## Test
+| Body | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `user`      | `User` | user entity |
 
-```bash
-# unit tests
-$ npm run test
+#### User auto login into system
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+```http
+  GET /auth/auto-login
 ```
 
-## Support
+| Body | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `user`      | `User` | user entity |
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Admin EP
 
-## Stay in touch
+```http
+  POST /admin/createUsersFromFile
+```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
-## License
+### 👋 Project is not finished and is completed in 70%
+## Authors
 
-Nest is [MIT licensed](LICENSE).
+- [@0xyy](https://github.com/0xyy)
+- [@hydraChaosu](https://github.com/hydraChaosu)
+- [@BilkaDev](https://github.com/BilkaDev)
+
+
+
+
