@@ -11,7 +11,7 @@ import { DisinterestStudentDto } from './dto/disinterest-student.dto';
 import { StudentDto } from './dto/student.dto';
 import {
     ActiveStudentsResponse, DisinterestStudentResponse,
-    HiredStudentResponse,
+    HiredStudentResponse, HrToStudentInterface,
     ReservationStudentResponse,
     StudentAvailabilityViewInterface,
     StudentInfoInterface,
@@ -22,6 +22,7 @@ import {
     UserRole,
 } from '../types';
 import { AllActiveStudentsDto } from './dto/all-active-students.dto';
+import { HrToStudentEntity } from '../hr/entities/hr-to.student.entity';
 
 @Injectable()
 export class StudentService {
@@ -35,7 +36,7 @@ export class StudentService {
         try {
             return await StudentInfo.findOneOrFail({
                 where: { id },
-                relations: ['user'],
+                relations: ['user', 'hrs'],
             });
         } catch (e) {
             throw new BadRequestException('Nie ma takiego kursanta.');
@@ -77,7 +78,7 @@ export class StudentService {
         });
     };
 
-    private filterStudentsToInterview = (students: StudentInfoInterface[]): StudentsToInterviewInterface[] => {
+    private filterStudentsToInterview = (students: HrToStudentInterface[]): StudentsToInterviewInterface[] => {
         return students.map(student => {
             const {
                 id: studentId,
@@ -94,8 +95,7 @@ export class StudentService {
                 canTakeApprenticeship,
                 monthsOfCommercialExp,
                 avatarUrl,
-                reservationTo,
-            } = student;
+            } = student.student;
             return {
                 studentId,
                 firstName,
@@ -111,7 +111,7 @@ export class StudentService {
                 canTakeApprenticeship,
                 monthsOfCommercialExp,
                 avatarUrl,
-                reservationTo,
+                reservationTo: student.reservationTo,
             };
         });
     };
@@ -199,10 +199,11 @@ export class StudentService {
             const expectedSalaryMax = query.expectedSalaryMax.length === 0 ? '99999999' : query.expectedSalaryMax;
 
             const [students, count] = await dataSource
-                .getRepository(StudentInfo)
-                .createQueryBuilder()
-                .where('hrId = :hr AND courseCompletion >= :courseCompletion AND courseEngagment >= :courseEngagment AND projectDegree >= :projectDegree AND teamProjectDegree >= :teamProjectDegree AND (canTakeApprenticeship = :canTakeApprenticeship OR canTakeApprenticeship = "Tak") AND monthsOfCommercialExp >= :monthsOfCommercialExp AND (expectedSalary BETWEEN :expectedSalaryMin AND :expectedSalaryMax OR expectedSalary IS null)', {
-                    hr: user.hr.id,
+                .getRepository(HrToStudentEntity)
+                .createQueryBuilder('hrToStudentEntity')
+                .leftJoinAndSelect('hrToStudentEntity.student', 'studentInfo')
+                .where('hrId = :hrId AND courseCompletion >= :courseCompletion AND courseEngagment >= :courseEngagment AND projectDegree >= :projectDegree AND teamProjectDegree >= :teamProjectDegree AND (canTakeApprenticeship = :canTakeApprenticeship OR canTakeApprenticeship = "Tak") AND monthsOfCommercialExp >= :monthsOfCommercialExp AND (expectedSalary BETWEEN :expectedSalaryMin AND :expectedSalaryMax OR expectedSalary IS null)', {
+                    hrId: user.hr.id,
                     courseCompletion,
                     courseEngagment,
                     projectDegree,
@@ -274,7 +275,7 @@ export class StudentService {
         }
     }
 
-    async update(user ,studentInfo: StudentDto): Promise<StudentInfoUpdateResponse> {
+    async update(user, studentInfo: StudentDto): Promise<StudentInfoUpdateResponse> {
         try {
             const avatarUrl = await this.findGithubAvatar(studentInfo.githubUsername);
             if (!avatarUrl.isSuccess) {
@@ -319,10 +320,12 @@ export class StudentService {
 
     async reservation({ studentId }: ReservationStudentDto, user: User): Promise<ReservationStudentResponse> {
         const { hr } = user;
+        if (hr.studentsToInterview.some(ele => ele.studentId === studentId)) {
+            throw new BadRequestException('Student już jest dodany w "Do Rozmowy".');
+        }
         const student = await this.getStudent(studentId);
         const active = student.user.active;
         const { status } = student;
-
         const { maxReservedStudents } = hr;
         if (maxReservedStudents <= hr.studentsToInterview.length) {
             throw new BadRequestException('Nie możesz dodać więcej kursantów "Do Rozmowy.');
@@ -333,28 +336,19 @@ export class StudentService {
         ) {
             throw new BadRequestException('Kursant jest niedostępny.');
         }
-
-        const { affected } = await StudentInfo.update(
-            {
-                id: student.id,
-                status: StudentStatus.ACCESSIBLE,
-            },
-            {
-                status: StudentStatus.PENDING,
-                hr,
-                reservationTo: new Date(new Date().getTime() + (10 * 24 * 60 * 60 * 1000)),
-            },
-        );
-        if (affected === 0) {
-            return {
-                message: 'Nie udało się dodać kursanta "Do rozmowy"',
-                isSuccess: false,
-            };
-        } else {
+        try {
+            const hrToStudent = new HrToStudentEntity();
+            hrToStudent.hr = hr;
+            hrToStudent.student = student;
+            hrToStudent.reservationTo = new Date(new Date().getTime() + (10 * 24 * 60 * 60 * 1000));
+            await hrToStudent.save();
             return {
                 message: 'Dodano kursanta "Do rozmowy"',
                 isSuccess: true,
             };
+        } catch (e) {
+            throw new BadRequestException('Nie udało się dodać kursanta "Do rozmowy"');
+
         }
     }
 
@@ -386,7 +380,7 @@ export class StudentService {
         }
     }
 
-    async hired({ studentId }: HiredStudentDto): Promise<HiredStudentResponse> {
+    async hired({ hr }: User, { studentId }: HiredStudentDto): Promise<HiredStudentResponse> {
         const student = await this.getStudent(studentId);
 
         if (!student) {
@@ -422,7 +416,7 @@ export class StudentService {
             this.mailService.sendMail(
                 studentEmail,
                 'Zostałeś zatrudniony!',
-                `Gratulacje! Zostałeś zatrudniony w ${student.hr.company}`,
+                `Gratulacje! Zostałeś zatrudniony w ${hr.company}`,
             );
         }
     }

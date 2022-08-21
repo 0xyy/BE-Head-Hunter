@@ -15,13 +15,14 @@ export class AdminService {
         @Inject(AuthService) private authService: AuthService,
         @Inject(MailService) private mailService: MailService,
         @Inject(HrService) private hrService: HrService,
-    ) {}
+    ) {
+    }
 
     async createUsersFromFile(jsonfile: any): Promise<InsertStudentResponse> {
         //TODO CHECK IF JSON
         const failedUsersToInsert = [];
         const userData = JSON.parse(
-            jsonfile.buffer.toString()
+            jsonfile.buffer.toString(),
         ) as InsertStudentDto[];
         const countUser = userData.length;
 
@@ -39,7 +40,7 @@ export class AdminService {
                 user.projectDegree < 0
             ) {
                 validationErrors.push(
-                    'projectDegree nie jest liczba, albo jest większy od 5 lub mniejszy niz 0'
+                    'projectDegree nie jest liczba, albo jest większy od 5 lub mniejszy niz 0',
                 );
             }
 
@@ -50,7 +51,7 @@ export class AdminService {
                 user.courseEngagment < 0
             ) {
                 validationErrors.push(
-                    'courseEngagment nie jest liczba, albo jest większy od 5 lub mniejszy niz 0'
+                    'courseEngagment nie jest liczba, albo jest większy od 5 lub mniejszy niz 0',
                 );
             }
 
@@ -61,7 +62,7 @@ export class AdminService {
                 user.courseCompletion < 0
             ) {
                 validationErrors.push(
-                    'courseCompletion nie jest liczba, albo jest większy od 5 lub mniejszy niz 0'
+                    'courseCompletion nie jest liczba, albo jest większy od 5 lub mniejszy niz 0',
                 );
             }
 
@@ -72,7 +73,7 @@ export class AdminService {
                 user.teamProjectDegree < 0
             ) {
                 validationErrors.push(
-                    'teamProjectDegree nie jest liczba, albo jest większy od 5 lub mniejszy niz 0'
+                    'teamProjectDegree nie jest liczba, albo jest większy od 5 lub mniejszy niz 0',
                 );
             }
 
@@ -99,11 +100,12 @@ export class AdminService {
             }
 
             try {
-                const response = await this.adminStudentService.insertStudent(user);
+                const token = this.authService.createToken(uuid());
+                const response = await this.adminStudentService.insertStudent({ ...user, token: token.accessToken });
 
                 if (response.isSuccess) {
-                    const token = this.authService.createToken(uuid());
-                    await this.mailService.sendMail(
+
+                    this.mailService.sendMail(
                         user.email,
                         'rejestracja użytkownika',
                         `html do zrobienia ${process.env.ACTIVATE_LINK}/${response.userId}/${token}/ `,
@@ -140,7 +142,7 @@ export class AdminService {
             });
 
             if (response.isSuccess) {
-                await this.mailService.sendMail(
+                this.mailService.sendMail(
                     body.email,
                     'Rejestracja użytkownika',
                     `html do zrobienia ${process.env.ACTIVATE_LINK}/${response.userId}/${token.accessToken}/`,
@@ -148,7 +150,7 @@ export class AdminService {
             }
 
             return {
-                isSuccess: true
+                isSuccess: true,
             };
         } catch (e) {
             return {

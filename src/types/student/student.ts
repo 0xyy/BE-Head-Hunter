@@ -1,4 +1,5 @@
 import { UserInterface } from '../user';
+import { HrToStudentInterface } from '../hr';
 
 export interface StudentInfoInterface {
     id: string;
@@ -26,7 +27,7 @@ export interface StudentInfoInterface {
     courses?: string;
     status: StudentStatus;
     user: UserInterface;
-    reservationTo: Date;
+    hrs: HrToStudentInterface[];
 }
 
 export interface StudentBonusProjectUrlInterface {
