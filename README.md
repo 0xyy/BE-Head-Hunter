@@ -1,4 +1,3 @@
-
 # 🚀 HeadHunter - backend v0.1
 
 ## This is a final project of MegaK Course. The main goal of application is to help recruiters get employees from the database of the company which will be using it.
@@ -14,20 +13,6 @@ you need to create a config-database.ts file in the config directory (src/config
 and add the data to the database connection.
 ```bash
 $ npm install
-```
-
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
 
 ## 🛠 Technologies used in this project:
 - TypeScript
@@ -79,6 +64,13 @@ $ npm run start:prod
 | Context | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
 | `user`      | `User` | user entity `REQUIRED`|
+
+#### User auto login into system
+
+=======
+| Body | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `user`      | `User` | user entity |
 
 #### User auto login into system
 
@@ -277,6 +269,3 @@ fe.
 - [@0xyy](https://github.com/0xyy)
 - [@hydraChaosu](https://github.com/hydraChaosu)
 - [@BilkaDev](https://github.com/BilkaDev)
-
-
-
