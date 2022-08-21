@@ -229,14 +229,47 @@ fe.
 |:-------| :------- | :-------------------------------- |
 | `user` | `User` | user entity `REQUIRED`|
 
+## Student EP 
 
+#### update data of coursant
 
+```http
+  PATCH /student/update
+```
 
+| Query                   | Type               | Description                                    |
+|:------------------------|:-------------------|:-----------------------------------------------|
+| `tel`                   | `string`           | phone number max length 15 `OPTIONAL`          |
+| `firstName`             | `string`           | name of coursant length from 2 to 60           |
+| `lastName`              | `string`           | last name of coursant length from 2 to 100     |
+| `githubUsername`        | `string`           | github name of coursant length from 2 to 255   |
+| `portfolioUrls`         | `array of string`  | array of links with projects                   |
+| `projectUrls`           | `array of string`  | array of links with projects                   |
+| `bio`                   | `string`           | bio `OPTIONAL`                                 |
+| `targetWorkCity`        | `string`           | in which city coursant want to work `OPTIONAL` |
+| `ExpectedTypeWork`      | `string`     | what type of work coursant expect              |
+| `ExpectedContractType`  | `string`     | what type of contract coursant expect          |
+| `education`             | `string`     | coursants education                            |
+| `expectedSalary`      | `number`           | expected salary coursant expects `OPTIONAL`    |
+| `canTakeApprenticeship` | `string` "Tak/Nie" | can take apprenticeship                        |
+| `monthsOfCommercialExp` | `number`           | howy many months of experience coursant have   |
+| `workExperience` | `string`           | is coursant having comercial experience        |
+| `courses` | `string`           | finished courses                               |
+| `status` | `string`           | current status of coursant                       |
 
+| Context      | Type     | Description                       |
+|:-------| :------- |:----------------------------------|
+| `user` | `User` | user entity `REQUIRED`            |
 
+#### deactivation of coursant
 
+```http
+  PATCH /student/deactivation
+```
 
-
+| Body | Type     | Description           |
+|:-----| :------- |:----------------------|
+| `userId`  | `string` | coursant id `REQUIRED` |
 
 ### 👋 Project is not finished and is completed in 70%
 ## Authors
